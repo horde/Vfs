@@ -27,7 +27,7 @@ Reading, writing and listing of files are all supported.</description>
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-03-20</date>
+ <date>2017-10-17</date>
  <version>
   <release>2.4.1</release>
   <api>2.4.0</api>
@@ -50,7 +50,6 @@ Reading, writing and listing of files are all supported.</description>
    <dir name="doc">
     <dir name="Horde">
      <dir name="Vfs">
-      <file name="COPYING" role="doc" />
       <file name="UPGRADING" role="doc" />
      </dir> <!-- /doc/Horde/Vfs -->
     </dir> <!-- /doc/Horde -->
@@ -385,6 +384,7 @@ Reading, writing and listing of files are all supported.</description>
      </dir> <!-- /test/Horde/Vfs -->
     </dir> <!-- /test/Horde -->
    </dir> <!-- /test -->
+   <file name="LICENSE" role="doc" />
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -490,7 +490,6 @@ Reading, writing and listing of files are all supported.</description>
  <phprelease>
   <filelist>
    <install as="horde-vfs" name="bin/horde-vfs" />
-   <install as="COPYING" name="doc/Horde/Vfs/COPYING" />
    <install as="UPGRADING" name="doc/Horde/Vfs/UPGRADING" />
    <install as="Horde/Vfs.php" name="lib/Horde/Vfs.php" />
    <install as="Horde/Vfs/Base.php" name="lib/Horde/Vfs/Base.php" />
@@ -507,7 +506,7 @@ Reading, writing and listing of files are all supported.</description>
    <install as="Horde/Vfs/SqlFile.php" name="lib/Horde/Vfs/SqlFile.php" />
    <install as="Horde/Vfs/Ssh2.php" name="lib/Horde/Vfs/Ssh2.php" />
    <install as="Horde/Vfs/Translation.php" name="lib/Horde/Vfs/Translation.php" />
-   <install as="locale/Horde_Vfs.pot" name="locale/Horde_Vfs.pot" />
+   <install as="LICENSE" name="LICENSE" />
    <install as="locale/ar/LC_MESSAGES/Horde_Vfs.mo" name="locale/ar/LC_MESSAGES/Horde_Vfs.mo" />
    <install as="locale/ar/LC_MESSAGES/Horde_Vfs.po" name="locale/ar/LC_MESSAGES/Horde_Vfs.po" />
    <install as="locale/bg/LC_MESSAGES/Horde_Vfs.mo" name="locale/bg/LC_MESSAGES/Horde_Vfs.mo" />
@@ -540,6 +539,7 @@ Reading, writing and listing of files are all supported.</description>
    <install as="locale/gl/LC_MESSAGES/Horde_Vfs.po" name="locale/gl/LC_MESSAGES/Horde_Vfs.po" />
    <install as="locale/he/LC_MESSAGES/Horde_Vfs.mo" name="locale/he/LC_MESSAGES/Horde_Vfs.mo" />
    <install as="locale/he/LC_MESSAGES/Horde_Vfs.po" name="locale/he/LC_MESSAGES/Horde_Vfs.po" />
+   <install as="locale/Horde_Vfs.pot" name="locale/Horde_Vfs.pot" />
    <install as="locale/hr/LC_MESSAGES/Horde_Vfs.mo" name="locale/hr/LC_MESSAGES/Horde_Vfs.mo" />
    <install as="locale/hr/LC_MESSAGES/Horde_Vfs.po" name="locale/hr/LC_MESSAGES/Horde_Vfs.po" />
    <install as="locale/hu/LC_MESSAGES/Horde_Vfs.mo" name="locale/hu/LC_MESSAGES/Horde_Vfs.mo" />
@@ -600,15 +600,13 @@ Reading, writing and listing of files are all supported.</description>
    <install as="Horde/Vfs/bootstrap.php" name="test/Horde/Vfs/bootstrap.php" />
    <install as="Horde/Vfs/conf.php.dist" name="test/Horde/Vfs/conf.php.dist" />
    <install as="Horde/Vfs/FileTest.php" name="test/Horde/Vfs/FileTest.php" />
+   <install as="Horde/Vfs/fixtures/samba1.txt" name="test/Horde/Vfs/fixtures/samba1.txt" />
+   <install as="Horde/Vfs/fixtures/samba2.txt" name="test/Horde/Vfs/fixtures/samba2.txt" />
    <install as="Horde/Vfs/FtpTest.php" name="test/Horde/Vfs/FtpTest.php" />
    <install as="Horde/Vfs/KolabTest.php" name="test/Horde/Vfs/KolabTest.php" />
    <install as="Horde/Vfs/MongoTest.php" name="test/Horde/Vfs/MongoTest.php" />
    <install as="Horde/Vfs/phpunit.xml" name="test/Horde/Vfs/phpunit.xml" />
    <install as="Horde/Vfs/SmbTest.php" name="test/Horde/Vfs/SmbTest.php" />
-   <install as="Horde/Vfs/Ssh2Test.php" name="test/Horde/Vfs/Ssh2Test.php" />
-   <install as="Horde/Vfs/TestBase.php" name="test/Horde/Vfs/TestBase.php" />
-   <install as="Horde/Vfs/fixtures/samba1.txt" name="test/Horde/Vfs/fixtures/samba1.txt" />
-   <install as="Horde/Vfs/fixtures/samba2.txt" name="test/Horde/Vfs/fixtures/samba2.txt" />
    <install as="Horde/Vfs/Sql/Base.php" name="test/Horde/Vfs/Sql/Base.php" />
    <install as="Horde/Vfs/Sql/MysqliTest.php" name="test/Horde/Vfs/Sql/MysqliTest.php" />
    <install as="Horde/Vfs/Sql/MysqlTest.php" name="test/Horde/Vfs/Sql/MysqlTest.php" />
@@ -622,6 +620,8 @@ Reading, writing and listing of files are all supported.</description>
    <install as="Horde/Vfs/SqlFile/Pdo/MysqlTest.php" name="test/Horde/Vfs/SqlFile/Pdo/MysqlTest.php" />
    <install as="Horde/Vfs/SqlFile/Pdo/PgsqlTest.php" name="test/Horde/Vfs/SqlFile/Pdo/PgsqlTest.php" />
    <install as="Horde/Vfs/SqlFile/Pdo/SqliteTest.php" name="test/Horde/Vfs/SqlFile/Pdo/SqliteTest.php" />
+   <install as="Horde/Vfs/Ssh2Test.php" name="test/Horde/Vfs/Ssh2Test.php" />
+   <install as="Horde/Vfs/TestBase.php" name="test/Horde/Vfs/TestBase.php" />
   </filelist>
  </phprelease>
  <changelog>
@@ -1320,7 +1320,7 @@ Added a class for providing garbage collection; removed all Horde dependancies.
    <stability>
     <release>stable</release>
     <api>stable</api></stability>
-   <date>2017-03-20</date>
+   <date>2017-10-17</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * 
