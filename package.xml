@@ -50,7 +50,7 @@ Reading, writing and listing of files are all supported.</description>
    <dir name="doc">
     <dir name="Horde">
      <dir name="Vfs">
-      <file name="UPGRADING" role="doc" />
+      <file name="UPGRADING.rst" role="doc" />
      </dir> <!-- /doc/Horde/Vfs -->
     </dir> <!-- /doc/Horde -->
    </dir> <!-- /doc -->
@@ -490,7 +490,7 @@ Reading, writing and listing of files are all supported.</description>
  <phprelease>
   <filelist>
    <install as="horde-vfs" name="bin/horde-vfs" />
-   <install as="UPGRADING" name="doc/Horde/Vfs/UPGRADING" />
+   <install as="UPGRADING.rst" name="doc/Horde/Vfs/UPGRADING.rst" />
    <install as="Horde/Vfs.php" name="lib/Horde/Vfs.php" />
    <install as="Horde/Vfs/Base.php" name="lib/Horde/Vfs/Base.php" />
    <install as="Horde/Vfs/Exception.php" name="lib/Horde/Vfs/Exception.php" />
