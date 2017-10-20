@@ -27,7 +27,7 @@ Reading, writing and listing of files are all supported.</description>
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-10-17</date>
+ <date>2017-10-20</date>
  <version>
   <release>2.4.1</release>
   <api>2.4.0</api>
@@ -377,7 +377,6 @@ Reading, writing and listing of files are all supported.</description>
       <file name="FtpTest.php" role="test" />
       <file name="KolabTest.php" role="test" />
       <file name="MongoTest.php" role="test" />
-      <file name="phpunit.xml" role="test" />
       <file name="SmbTest.php" role="test" />
       <file name="Ssh2Test.php" role="test" />
       <file name="TestBase.php" role="test" />
@@ -605,7 +604,6 @@ Reading, writing and listing of files are all supported.</description>
    <install as="Horde/Vfs/FtpTest.php" name="test/Horde/Vfs/FtpTest.php" />
    <install as="Horde/Vfs/KolabTest.php" name="test/Horde/Vfs/KolabTest.php" />
    <install as="Horde/Vfs/MongoTest.php" name="test/Horde/Vfs/MongoTest.php" />
-   <install as="Horde/Vfs/phpunit.xml" name="test/Horde/Vfs/phpunit.xml" />
    <install as="Horde/Vfs/SmbTest.php" name="test/Horde/Vfs/SmbTest.php" />
    <install as="Horde/Vfs/Sql/Base.php" name="test/Horde/Vfs/Sql/Base.php" />
    <install as="Horde/Vfs/Sql/MysqliTest.php" name="test/Horde/Vfs/Sql/MysqliTest.php" />
@@ -1320,7 +1318,7 @@ Added a class for providing garbage collection; removed all Horde dependancies.
    <stability>
     <release>stable</release>
     <api>stable</api></stability>
-   <date>2017-10-17</date>
+   <date>2017-10-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * 
