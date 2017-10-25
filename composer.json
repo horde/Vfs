@@ -1,5 +1,5 @@
 {
-    "name": "horde/horde-vfs",
+    "name": "horde/vfs",
     "description": "Virtual File System API",
     "type": "library",
     "homepage": "https://pear.horde.org",
@@ -17,7 +17,7 @@
         }
     ],
     "version": "2.4.1",
-    "time": "2017-03-20",
+    "time": "2017-10-20",
     "repositories": [
         {
             "type": "pear",
@@ -26,20 +26,20 @@
     ],
     "require": {
         "php": "^5.3 || ^7",
-        "pear-pear.horde.org/Horde_Exception": "^2@stable",
-        "pear-pear.horde.org/Horde_Translation": "^2.2@stable",
-        "pear-pear.horde.org/Horde_Util": "^2@stable"
+        "pear-pear.horde.org/Horde_Exception": "^2",
+        "pear-pear.horde.org/Horde_Translation": "^2.2",
+        "pear-pear.horde.org/Horde_Util": "^2"
     },
     "suggest": {
-        "pear-pear.horde.org/Horde_Auth": "^2@stable",
-        "pear-pear.horde.org/Horde_Core": "^2@stable",
-        "pear-pear.horde.org/Horde_Db": "^2.4@stable",
-        "pear-pear.horde.org/Horde_Kolab_Session": "^2@stable",
-        "pear-pear.horde.org/Horde_Mime": "^2@stable",
-        "pear-pear.horde.org/Horde_Mongo": "^1@stable",
-        "pear-pear.horde.org/Horde_Perms": "^2@stable",
-        "pear-pear.horde.org/Horde_Test": "^2.1@stable",
-        "pear-pecl.php.net/ssh2": "^0.12@stable",
+        "pear-pear.horde.org/Horde_Auth": "^2",
+        "pear-pear.horde.org/Horde_Core": "^2",
+        "pear-pear.horde.org/Horde_Db": "^2.4",
+        "pear-pear.horde.org/Horde_Kolab_Session": "^2",
+        "pear-pear.horde.org/Horde_Mime": "^2",
+        "pear-pear.horde.org/Horde_Mongo": "^1",
+        "pear-pear.horde.org/Horde_Perms": "^2",
+        "pear-pear.horde.org/Horde_Test": "^2.1",
+        "pear-pecl.php.net/ssh2": "^0.12",
         "ext-ftp": "*"
     },
     "replace": {
