@@ -16,3 +16,46 @@ description: |
   Reading, writing and listing of files are all supported.
 list: dev
 type: library
+homepage: https://www.horde.org/libraries/Horde_Vfs
+authors:
+  -
+    name: Chuck Hagenbuch
+    user: chuck
+    email: chuck@horde.org
+    active: true
+    role: lead
+  -
+    name: Jan Schneider
+    user: jan
+    email: jan@horde.org
+    active: true
+    role: lead
+version:
+  release: 2.4.1
+  api: 2.4.0
+state:
+  release: stable
+  api: stable
+license:
+  identifier: LGPL-2.1
+  uri: http://www.horde.org/licenses/lgpl21
+dependencies:
+  required:
+    php: ^5.3 || ^7
+    pear:
+      pear.horde.org/Horde_Exception: ^2
+      pear.horde.org/Horde_Translation: ^2.2
+      pear.horde.org/Horde_Util: ^2
+  optional:
+    pear:
+      pear.horde.org/Horde_Auth: ^2
+      pear.horde.org/Horde_Core: ^2
+      pear.horde.org/Horde_Db: ^2.4
+      pear.horde.org/Horde_Kolab_Session: ^2
+      pear.horde.org/Horde_Mime: ^2
+      pear.horde.org/Horde_Mongo: ^1
+      pear.horde.org/Horde_Perms: ^2
+      pear.horde.org/Horde_Test: ^2.1
+      pecl.php.net/ssh2: ^0.12
+    ext:
+      ftp: '*'
