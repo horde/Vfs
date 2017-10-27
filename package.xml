@@ -27,7 +27,7 @@ Reading, writing and listing of files are all supported.</description>
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-10-20</date>
+ <date>2017-10-27</date>
  <version>
   <release>2.4.1</release>
   <api>2.4.0</api>
@@ -49,6 +49,7 @@ Reading, writing and listing of files are all supported.</description>
    <dir name="doc">
     <dir name="Horde">
      <dir name="Vfs">
+      <file name="CHANGES" role="doc" />
       <file name="UPGRADING.rst" role="doc" />
      </dir> <!-- /doc/Horde/Vfs -->
     </dir> <!-- /doc/Horde -->
@@ -488,6 +489,7 @@ Reading, writing and listing of files are all supported.</description>
  <phprelease>
   <filelist>
    <install as="horde-vfs" name="bin/horde-vfs" />
+   <install as="CHANGES" name="doc/Horde/Vfs/CHANGES" />
    <install as="UPGRADING.rst" name="doc/Horde/Vfs/UPGRADING.rst" />
    <install as="Horde/Vfs.php" name="lib/Horde/Vfs.php" />
    <install as="Horde/Vfs/Base.php" name="lib/Horde/Vfs/Base.php" />
@@ -1316,7 +1318,7 @@ Reading, writing and listing of files are all supported.</description>
    <stability>
     <release>stable</release>
     <api>stable</api></stability>
-   <date>2017-10-20</date>
+   <date>2017-10-27</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
    </notes>
