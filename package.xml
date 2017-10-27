@@ -38,7 +38,6 @@ Reading, writing and listing of files are all supported.</description>
  </stability>
  <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
  <notes>
-* 
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -635,7 +634,7 @@ Reading, writing and listing of files are all supported.</description>
    <date>2002-09-24</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-Initial release as a PEAR package
+* Initial release as a PEAR package
    </notes>
   </release>
   <release>
@@ -650,7 +649,7 @@ Initial release as a PEAR package
    <date>2002-10-22</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-Added an ObjectVFS wrapper class, returns a ListItem on each call to listFolder, until no items are left.
+* Added an ObjectVFS wrapper class, returns a ListItem on each call to listFolder, until no items are left.
    </notes>
   </release>
   <release>
@@ -665,7 +664,7 @@ Added an ObjectVFS wrapper class, returns a ListItem on each call to listFolder,
    <date>2003-07-03</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-Added a class for providing garbage collection; removed all Horde dependancies.
+* Added a class for providing garbage collection; removed all Horde dependancies.
    </notes>
   </release>
   <release>
@@ -1014,7 +1013,6 @@ Added a class for providing garbage collection; removed all Horde dependancies.
    <date>2012-03-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-*
    </notes>
   </release>
   <release>
@@ -1321,7 +1319,6 @@ Added a class for providing garbage collection; removed all Horde dependancies.
    <date>2017-10-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-* 
    </notes>
   </release>
  </changelog>
