@@ -1,0 +1,416 @@
+----------
+v2.4.1-git
+----------
+
+
+------
+v2.4.0
+------
+
+[mjr] Allow Horde_Vfs::writeData() to accept stream input.
+[jan] Fix retrieving files from root folder with SQL backends (Bug #14545).
+
+
+------
+v2.3.4
+------
+
+[jan] Use more efficient database access in SQL backend.
+
+
+------
+v2.3.3
+------
+
+[jan] Fix creating the vfsroot when using paths in the 'hostspec' parameter of
+      the Smb driver.
+[jan] Don't change directory when listing folders in File backend.
+[jan] Allow to specify root folder ('/') as 'vfsroot' parameter.
+
+
+------
+v2.3.2
+------
+
+[jan] Update Greek translation (Limperis Antonis <limperis@cti.gr>).
+
+
+------
+v2.3.1
+------
+
+[jan] Mark PHP 7 as supported.
+
+
+------
+v2.3.0
+------
+
+[jan] Make 'port' parameter of Smb driver optional.
+[jan] Add 'domain' parameter to Smb driver.
+[jan] Allow to specify a fixed leading directory in Smb driver.
+
+
+------
+v2.2.2
+------
+
+[jan] Fix updating quota when overwriting existing files.
+[jan] Fix updating quota when using writeData() with FTP driver.
+[jan] Fix setting permissions in Ssh2 driver (Bug #13783).
+
+
+------
+v2.2.1
+------
+
+[jan] Support loading translations from Composer-installed package.
+[jan] Improve PSR-2 compatibility.
+
+
+------
+v2.2.0
+------
+
+[jan] Remove broken Kolab driver.
+[mms] Add null VFS driver.
+[jan] Support Oracle with SQL driver.
+
+
+------
+v2.1.2
+------
+
+[jan] Bump minimum version of SSH2 extension to 0.12.
+
+
+------
+v2.1.1
+------
+
+[jan] Return more detailed error messages from File driver.
+
+
+------
+v2.1.0
+------
+
+[mms] Add MongoDB storage driver.
+[jan] Use ssh2_sftp_chmod() if available (ssh2 0.12).
+
+
+------
+v2.0.4
+------
+
+[jan] Update Basque translation (Ibon Igartua <ibon.igartua@ehu.es>).
+[jan] Don't rely on PEAR to determine Windows OS in Samba backend.
+[jan] Implement vfsroot parameter in Samba backend.
+
+
+------
+v2.0.3
+------
+
+[jan] Fix deleting folders from absolute path in FTP backend (Bug #11761).
+
+
+------
+v2.0.2
+------
+
+[jan] Fix old folder not being removed when moving a folder (Bug #11703).
+[jan] Fix checking source and destination paths being the same (Bug #11702).
+
+
+------
+v2.0.1
+------
+
+[jan] Update Dutch translation (Arjen de Korte <build+horde@de-korte.org>).
+
+
+------
+v2.0.0
+------
+
+First stable release for Horde 5.
+
+
+---------
+v2.0.0RC1
+---------
+
+[jan] Fix check whether quota limit is set (Bug #11455).
+
+
+-----------
+v2.0.0beta2
+-----------
+
+[jan] Fix sending and reading files in SSH2 driver if vfsroot is not set (Bug
+      #11451).
+
+
+-----------
+v2.0.0beta1
+-----------
+
+First beta release for Horde 5.
+[jan] Fix finding locale directory if installed with PEAR.
+
+
+------------
+v2.0.0alpha1
+------------
+
+First alpha release for Horde 5.
+[jan] Add hasFeature().
+[jan] Drop listFolders() method.
+[jan] Remove Horde_Vfs_Browser, Horde_Vfs_ListItem, Horde_Vfs_Object classes.
+
+
+-------
+v1.0.10
+-------
+
+
+------
+v1.0.9
+------
+
+[jan] Fix inconsistent behavior of the different backend drivers.
+[jan] Fix double unlink() of temporary files.
+[jan] Fix ignored $dotfolder argument for listFolders() in SQL driver.
+[jan] Fix several issues with quota calculation.
+[jan] Fix recursive listFolder() on base directory.
+[jan] Fix calculating folder sizes with similar folder names in SQL driver.
+
+
+------
+v1.0.8
+------
+
+[gwr] Make unit tests timezone independent.
+
+
+------
+v1.0.7
+------
+
+[jan] Fix reading file sizes from Samba backends.
+[jan] Catch output from smbclient during error conditions (Bug #10638).
+[jan] Implement size() method in Samba driver.
+
+
+------
+v1.0.6
+------
+
+[jan] Fix setting permissions with File driver (Bug #10630).
+[mms] Fix using File driver if vfsroot directory already exists (Bug #10584).
+[mms] Fix internal reference to QUOTA_METRIC_* constants (Bug #10585).
+[jan] Fix parsing of directory listings on /dev file systems in the SSH driver.
+
+
+------
+v1.0.5
+------
+
+[jan] Fix renaming and catching errors while reading sizes in SQL driver.
+[jan] Fix reading file contents from FTP.
+
+
+------
+v1.0.4
+------
+
+[jan] Update Latvian translation.
+[jan] Fix listing files with SSH2 driver if not using a bourne-style shell
+      (lstewart@room52.net, Bug #9497).
+[jan] Update Brazilian Portuguese translation.
+
+
+------
+v1.0.3
+------
+
+[jan] Fix garbage collection with SQL driver (Bug #10242).
+
+
+------
+v1.0.2
+------
+
+[mms] Fix call to setAuth() (Bug #10027).
+
+
+------
+v1.0.1
+------
+
+[jan] Fix creating folders with SQL driver (Bug #9894).
+[jan] Fix creating temporary files with open_basedir restrictions.
+
+
+------
+v1.0.0
+------
+
+First stable release for Horde 4.
+
+
+---------
+v1.0.0RC2
+---------
+
+Second release candidate for Horde 4.
+Fixed VFS folder creation (Bug #9711).
+
+
+---------
+v1.0.0RC1
+---------
+
+First release candidate for Horde 4.
+
+
+-----------
+v1.0.0beta1
+-----------
+
+Convert to PHP 5 and Horde 4 package layout.
+
+
+------------
+v1.0.0alpha1
+------------
+
+First alpha release for Horde 4.
+
+
+------
+v0.3.0
+------
+
+Allow access to files with multiple consecutive dots in the name
+      (valentin.vidic@carnet.hr; Horde Bug #7646).
+Rename fixes for SMB driver (leena.heino@uta.fi, Horde Bug #7933).
+Set LC_TIME to C for consistency in date parsing in the SSH2 backend
+      (michael-dev@fami-braun.de, Horde Bug #6396)
+Pass -n for numeric UIDs/GIDs in the SSH2 backend when mapping to local user
+      ids (Horde Request #6579)
+Fix readByteRange() (wrong method name) in SQL backend
+Add readFile() support, with optimizations for file, ftp, ssh2, and smb
+      backends
+Add readStream() support to backends that can get a stream resource efficiently
+Add delete() as a shorter name for deleteFile()
+Add a Kolab VFS driver.
+Use streams for file transfers in VFS_ssh2 (jives@jives.ixum.net, Horde
+      Request #8323)
+Check quota when copying files (Horde Bug #8643).
+
+
+------
+v0.2.0
+------
+
+Fix listing of folders with whitespace in the name using the SSH2 VFS driver
+      (Horde Bug #6227).
+Fix some string parsing on systems that don't have the 'en' or 'en_US' locales
+      installed (Horde Bug #6194).
+PHP 4.3.0+ is now required and we make unconditional use of
+      file_get_contents().
+Use strlen() instead of empty() to check for paths and filenames being set, to
+      allow for potential names of 0 (zero).
+Converted to package.xml 2.0.
+Fix saving files in the root directory of an SQL backend.
+Never generate paths with double slashes in them (//) (Horde Bug #5821)
+Improve Netware FTP support (Horde Bug #5821)
+Add read stream support to some backends (Horde Bug #5913)
+Make the smb backend compatible with samba versions after samba-3.0.25-pre2
+      (felix.leimbach@gmx.net, Horde Bug #5931)
+
+
+------
+v0.1.0
+------
+
+SQL drivers now return empty values if the particular parameter does not exist
+      on the server (instead of '-').
+Add initial VFS quota support.
+Fix autocreatePath() to work with directory paths that begin with the base
+      directory.
+Add 'maplocalids' and 'timeout' parameters to the FTP driver.
+In SQL driver, allow '/' to indicate the base directory.
+Fix return value of deleteFile() in File and SQLFile drivers (PEAR Bug #4425).
+Fix listFolders() in File driver (PEAR Bug #4533).
+Add size() and readByteRange(), with File and SQL implementations.
+Add support for NetWare FTP server listings (Lukas Macura <macura@opf.slu.cz>).
+Add support for separate read and write DB servers for the SQL driver.
+Add copy() and move() fallback implementations for all drivers.
+Add parameters to copy() and move() to automatically create destination
+      directories.
+Add SSH2/SFTP driver (Cliff Green <green@umdnj.edu>).
+Let rename() automatically create the destination path.
+Make sure copy/move doesn't result in infinite recursion (Horde Bug #3680).
+
+
+------
+v0.0.5
+------
+
+Fix typo that prevented the sql_file driver to load its parameters.
+PHP 5 compatibility fixes.
+Add 'pasv' parameter for FTP driver.
+Add writeData() method to sql_file driver.
+Support ~/path when a 'home' parameter is defined.
+Add a CLI script for accessing and modifying VFS backends.
+Added getCurrentDirectory() method.
+phpdoc has been updated and should now generate correctly in all files.
+Return error if trying to copy a file onto itself with the file driver
+      (http://bugs.horde.org/ticket/?id=168).
+Several bug fixes to listFolders() method in SQL drivers.
+A PEAR Log object can now be specified for logging messages to.
+Added getParam() method.
+Allow recursive listings in listFolder().
+Several fixes with zero length files.
+Fixed autocreating of directories and updating of existing files in the
+      sql_file VFS driver (http://bugs.horde.org/ticket/?id=1552,
+      http://bugs.horde.org/ticket/?id=1553).
+Added SQL scripts to create tables for SQL backends.
+
+
+------
+v0.0.4
+------
+
+Default ftp driver to port 21.
+Distinguish between connection and authentication errors in the ftp driver.
+Clean up temporary files if the FTP driver wasn't able to retrieve a file.
+Add exists() method.
+Add emptyFolder() method.
+Add $recursive parameter to all deleteFolder() implementations.
+Add FTPS support.
+
+
+------
+v0.0.3
+------
+
+Added a class for providing garbage collection; removed all Horde dependancies.
+
+
+------
+v0.0.2
+------
+
+Added an ObjectVFS wrapper class, returns a ListItem on each call to
+      listFolder, until no items are left.
+
+
+------
+v0.0.1
+------
+
+Initial release as a PEAR package
