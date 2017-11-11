@@ -56,6 +56,8 @@ dependencies:
       pear.horde.org/Horde_Mongo: ^1
       pear.horde.org/Horde_Perms: ^2
       pear.horde.org/Horde_Test: ^2.1
-      pecl.php.net/ssh2: ^0.12
+      pecl.php.net/ssh2:
+        version: ^0.12 || ^1
+        providesextension: ssh
     ext:
       ftp: '*'
