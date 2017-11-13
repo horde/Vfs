@@ -1,8 +1,8 @@
 {
     "name": "horde/vfs",
-    "description": "Virtual File System API",
+    "description": "Virtual file system library",
     "type": "library",
-    "homepage": "https://pear.horde.org",
+    "homepage": "https://www.horde.org/libraries/Horde_Vfs",
     "license": "LGPL-2.1",
     "authors": [
         {
@@ -17,7 +17,7 @@
         }
     ],
     "version": "2.4.1",
-    "time": "2017-10-20",
+    "time": "2017-11-11",
     "repositories": [
         {
             "type": "pear",
@@ -39,7 +39,7 @@
         "pear-pear.horde.org/Horde_Mongo": "^1",
         "pear-pear.horde.org/Horde_Perms": "^2",
         "pear-pear.horde.org/Horde_Test": "^2.1",
-        "pear-pecl.php.net/ssh2": "^0.12",
+        "pear-pecl.php.net/ssh2": "^0.12 || ^1",
         "ext-ftp": "*"
     },
     "replace": {
