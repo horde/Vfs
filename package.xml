@@ -3,7 +3,7 @@
  <name>Horde_Vfs</name>
  <channel>pear.horde.org</channel>
  <extends>VFS</extends>
- <summary>Virtual File System API</summary>
+ <summary>Virtual file system library</summary>
  <description>A Virtual File System API, with backends for:
 
 * SQL
@@ -14,20 +14,21 @@
 * SSH2/SFTP
 * MongoDB
 
-Reading, writing and listing of files are all supported.</description>
- <lead>
-  <name>Chuck Hagenbuch</name>
-  <user>chuck</user>
-  <email>chuck@horde.org</email>
-  <active>yes</active>
- </lead>
+Reading, writing and listing of files are all supported.
+</description>
  <lead>
   <name>Jan Schneider</name>
   <user>jan</user>
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-10-30</date>
+ <lead>
+  <name>Chuck Hagenbuch</name>
+  <user>chuck</user>
+  <email>chuck@horde.org</email>
+  <active>no</active>
+ </lead>
+ <date>2017-11-14</date>
  <version>
   <release>2.4.1</release>
   <api>2.4.0</api>
@@ -480,8 +481,10 @@ Reading, writing and listing of files are all supported.</description>
    <package>
     <name>ssh2</name>
     <channel>pecl.php.net</channel>
-    <min>0.12</min>
-    <providesextension>ssh2</providesextension>
+    <min>0.12.0</min>
+    <max>2.0.0alpha1</max>
+    <exclude>2.0.0alpha1</exclude>
+    <providesextension>ssh</providesextension>
    </package>
    <extension>
     <name>ftp</name>
@@ -1322,7 +1325,7 @@ Reading, writing and listing of files are all supported.</description>
    <stability>
     <release>stable</release>
     <api>stable</api></stability>
-   <date>2017-10-30</date>
+   <date>2017-11-14</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * 
