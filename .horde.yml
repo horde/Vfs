@@ -2,18 +2,8 @@
 id: Vfs
 name: Vfs
 full: Virtual file system library
-description: |
-  A Virtual File System API, with backends for:
-  
-  * SQL
-  * FTP
-  * Local filesystems
-  * Hybrid SQL and filesystem
-  * Samba
-  * SSH2/SFTP
-  * MongoDB
-  
-  Reading, writing and listing of files are all supported.
+description: >-
+  A library that provides a Virtual File System API, with backends for SQL, FTP, Local filesystems, Hybrid SQL and filesystem, Samba, SSH2/SFTP, MongoDB. Reading, writing and listing of files are all supported.
 list: dev
 type: library
 homepage: https://www.horde.org/libraries/Horde_Vfs
