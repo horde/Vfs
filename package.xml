@@ -4,31 +4,20 @@
  <channel>pear.horde.org</channel>
  <extends>VFS</extends>
  <summary>Virtual file system library</summary>
- <description>A Virtual File System API, with backends for:
-
-* SQL
-* FTP
-* Local filesystems
-* Hybrid SQL and filesystem
-* Samba
-* SSH2/SFTP
-* MongoDB
-
-Reading, writing and listing of files are all supported.
-</description>
- <lead>
-  <name>Chuck Hagenbuch</name>
-  <user>chuck</user>
-  <email>chuck@horde.org</email>
-  <active>yes</active>
- </lead>
+ <description>A library that provides a Virtual File System API, with backends for SQL, FTP, Local filesystems, Hybrid SQL and filesystem, Samba, SSH2/SFTP, MongoDB. Reading, writing and listing of files are all supported.</description>
  <lead>
   <name>Jan Schneider</name>
   <user>jan</user>
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-11-11</date>
+ <lead>
+  <name>Chuck Hagenbuch</name>
+  <user>chuck</user>
+  <email>chuck@horde.org</email>
+  <active>no</active>
+ </lead>
+ <date>2020-03-13</date>
  <version>
   <release>2.4.1</release>
   <api>2.4.0</api>
@@ -386,6 +375,7 @@ Reading, writing and listing of files are all supported.
     </dir> <!-- /test/Horde -->
    </dir> <!-- /test -->
    <file name="LICENSE" role="doc" />
+   <file name="README.rst" role="doc" />
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -600,6 +590,7 @@ Reading, writing and listing of files are all supported.
    <install as="migration/2_horde_vfs_upgrade_autoincrement.php" name="migration/Horde/Vfs/2_horde_vfs_upgrade_autoincrement.php" />
    <install as="migration/3_horde_vfs_fix_blob_length.php" name="migration/Horde/Vfs/3_horde_vfs_fix_blob_length.php" />
    <install as="migration/4_horde_vfs_upgrade_null_columns.php" name="migration/Horde/Vfs/4_horde_vfs_upgrade_null_columns.php" />
+   <install as="README.rst" name="README.rst" />
    <install as="Horde/Vfs/AllTests.php" name="test/Horde/Vfs/AllTests.php" />
    <install as="Horde/Vfs/bootstrap.php" name="test/Horde/Vfs/bootstrap.php" />
    <install as="Horde/Vfs/conf.php.dist" name="test/Horde/Vfs/conf.php.dist" />
@@ -1323,7 +1314,7 @@ Reading, writing and listing of files are all supported.
    <stability>
     <release>stable</release>
     <api>stable</api></stability>
-   <date>2017-11-11</date>
+   <date>2020-03-13</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * 
