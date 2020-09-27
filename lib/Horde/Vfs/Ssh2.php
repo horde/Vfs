@@ -865,11 +865,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      */
     protected function _wrap($remote)
     {
-        $wrapper = 'ssh2.sftp://' . $this->_params['username'] . ':'
-            . $this->_params['password'] . '@' . $this->_params['hostspec'];
-        if (!empty($this->_params['port'])) {
-            $wrapper .= ':' . $this->_params['port'];
-        }
+        $wrapper = 'ssh2.sftp://' . intval($this->_sftp);
         if ($remote[0] != '/') {
             $remote = $this->getCurrentDirectory() . '/' . $remote;
         }
