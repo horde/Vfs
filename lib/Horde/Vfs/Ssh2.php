@@ -870,7 +870,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         if (!empty($this->_params['port'])) {
             $wrapper .= ':' . $this->_params['port'];
         }
-        if ($remote{0} != '/') {
+        if ($remote[0] != '/') {
             $remote = $this->getCurrentDirectory() . '/' . $remote;
         }
         return $wrapper . $remote;
