@@ -17,7 +17,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
 {
     public static function setUpBeforeClass()
     {
-        $config = self::getConfig('VFS_FTP_TEST_CONFIG', __DIR__);
+        $config = self::getConfig('VFS_SMB_TEST_CONFIG', __DIR__);
         if ($config && !empty($config['vfs']['smb'])) {
             if (!is_executable($config['vfs']['smb']['smbclient'])) {
                 self::$reason = 'No executable smbclient';
@@ -212,7 +212,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
         self::$vfs->createFolder('', 'hostspectest');
         self::$vfs->createFolder('hostspectest', 'directory');
         self::$vfs->createFolder('hostspectest/directory', 'subdir');
-        $config = self::getConfig('VFS_FTP_TEST_CONFIG', __DIR__);
+        $config = self::getConfig('VFS_SMB_TEST_CONFIG', __DIR__);
         $config['vfs']['smb']['share'] .= '/hostspectest';
         $vfs = Horde_Vfs::factory('Smb', $config['vfs']['smb']);
         $this->assertEquals(
