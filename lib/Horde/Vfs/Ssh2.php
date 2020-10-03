@@ -101,7 +101,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         $this->_connect();
 
         $statinfo = @ssh2_sftp_stat($this->_sftp, $this->_getPath($path, $name));
-        if (($size = $statinfo['size']) === false) {
+        if ( ($statinfo === false) or (($size = $statinfo['size']) === false) ) {
             throw new Horde_Vfs_Exception(sprintf('Unable to check file size of "%s".', $this->_getPath($path, $name)));
         }
 
@@ -260,7 +260,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         /* See if we can stat the remote filename. ANDed with 040000 is true
          * if it is a directory. */
         $statinfo = @ssh2_sftp_stat($this->_sftp, $this->_getPath($path, $name));
-        return $statinfo['mode'] & 040000;
+        return ( $statinfo !== false ) and ( $statinfo['mode'] & 040000 );
     }
 
     /**
@@ -865,12 +865,8 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      */
     protected function _wrap($remote)
     {
-        $wrapper = 'ssh2.sftp://' . $this->_params['username'] . ':'
-            . $this->_params['password'] . '@' . $this->_params['hostspec'];
-        if (!empty($this->_params['port'])) {
-            $wrapper .= ':' . $this->_params['port'];
-        }
-        if ($remote{0} != '/') {
+        $wrapper = 'ssh2.sftp://' . intval($this->_sftp);
+        if ($remote[0] != '/') {
             $remote = $this->getCurrentDirectory() . '/' . $remote;
         }
         return $wrapper . $remote;
