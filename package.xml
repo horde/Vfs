@@ -19,7 +19,7 @@
  </lead>
  <date>2020-10-14</date>
  <version>
-  <release>2.4.1</release>
+  <release>2.4.2</release>
   <api>2.4.0</api>
  </version>
  <stability>
@@ -28,7 +28,7 @@
  </stability>
  <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
  <notes>
-* [mjr] Use existing sftp resource when creating url wrapper (PR #1).
+* 
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -617,6 +617,51 @@
   </filelist>
  </phprelease>
  <changelog>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <release>
    <version>
     <release>0.0.1</release>
@@ -1373,10 +1418,25 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2017-10-20</date>
+   <date>2020-10-14</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * [mjr] Use existing sftp resource when creating url wrapper (PR #1).
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>2.4.2</release>
+    <api>2.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2020-10-14</date>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+   <notes>
+* 
    </notes>
   </release>
  </changelog>
