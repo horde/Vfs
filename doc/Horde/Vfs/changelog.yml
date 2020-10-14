@@ -8,7 +8,8 @@
   license:
     identifier: LGPL-2.1
     uri: http://www.horde.org/licenses/lgpl21
-  notes:
+  notes: |
+    [mjr] Use existing sftp resource when creating url wrapper (PR #1).
 2.4.0:
   api: 2.4.0
   state:
@@ -267,7 +268,7 @@
   license:
     identifier: LGPL-2.1
     uri: http://www.horde.org/licenses/lgpl21
-  notes:
+  notes: ~
 1.0.9:
   api: 1.0.0
   state:
