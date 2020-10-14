@@ -1,6 +1,8 @@
-----------
-v2.4.1-git
-----------
+------
+v2.4.1
+------
+
+[mjr] Use existing sftp resource when creating url wrapper (PR #1).
 
 
 ------
