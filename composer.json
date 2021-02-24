@@ -46,9 +46,6 @@
     "autoload": {
         "psr-0": {
             "Horde_Vfs": "lib/"
-        },
-        "psr-4": {
-            "Horde\\Vfs\\": "src/"
         }
     }
 }
