@@ -26,22 +26,22 @@
     ],
     "require": {
         "horde/horde-installer-plugin": "*",
-        "php": "^5.3 || ^7",
-        "horde/exception": "^2",
-        "horde/translation": "^2.2",
-        "horde/util": "^2"
+        "php": "^7",
+        "horde/exception": "^3",
+        "horde/translation": "^3",
+        "horde/util": "^3"
     },
     "suggest": {
-        "horde/auth": "^2",
-        "horde/core": "^2",
-        "horde/db": "^2.4",
-        "horde/kolab_session": "^2",
-        "horde/mime": "^2",
-        "horde/mongo": "^1",
-        "horde/perms": "^2",
-        "horde/test": "^2.1",
-        "ext-ssh2": "^0.12 || ^1",
-        "ext-ftp": "*"
+        "horde/auth": "^3",
+        "horde/core": "^3",
+        "horde/db": "^3",
+        "horde/kolab_session": "^3",
+        "horde/mime": "^3",
+        "horde/mongo": "^2",
+        "horde/perms": "^3",
+        "horde/test": "^3",
+        "ext-ftp": "*",
+        "ext-ssh2": "*"
     },
     "autoload": {
         "psr-0": {
