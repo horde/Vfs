@@ -406,7 +406,13 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         $files = array();
         for ($r = 0; $r < $num_lines; $r++) {
             // Match file listing.
-            if (!preg_match('/^  (.+?) +([A-Z]*) +(\d+)  (\w\w\w \w\w\w [ \d]\d \d\d:\d\d:\d\d \d\d\d\d)$/', $res[$r], $match)) {
+            // One or multiple whitespace
+            // followed by filename
+            // Followed by one or multiple WS
+            // Followed by zero, one or more attribute letters
+            // Followed by one or multiple WS
+            // Followed by possibly more statistics
+            if (!preg_match('/^\s+(.+?)\s+(\w*)\s+(\d+)  (\w\w\w \w\w\w [ \d]\d \d\d:\d\d:\d\d \d\d\d\d)$/', $res[$r], $match)) {
                 continue;
             }
 
