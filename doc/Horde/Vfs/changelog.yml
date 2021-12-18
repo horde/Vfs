@@ -1,5 +1,5 @@
 ---
-2.4.1:
+2.4.2:
   api: 2.4.0
   state:
     release: stable
@@ -10,6 +10,17 @@
     uri: http://www.horde.org/licenses/lgpl21
   notes: |
     [mjr] Fix parsing top level directories in Smb driver, (PR #3, lang@b1-systems.de).
+2.4.1:
+  api: 2.4.0
+  state:
+    release: stable
+    api: stable
+  date: 2021-12-18
+  license:
+    identifier: LGPL-2.1
+    uri: http://www.horde.org/licenses/lgpl21
+  notes: |
+    [mjr] Use existing sftp resource when creating url wrapper (PR #1).
 2.4.0:
   api: 2.4.0
   state:
