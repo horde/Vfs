@@ -17,7 +17,7 @@
   <email>chuck@horde.org</email>
   <active>no</active>
  </lead>
- <date>2020-10-14</date>
+ <date>2021-12-18</date>
  <version>
   <release>2.4.2</release>
   <api>2.4.0</api>
@@ -28,7 +28,7 @@
  </stability>
  <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
  <notes>
-* 
+* [mjr] Fix parsing top level directories in Smb driver, (PR #3, lang@b1-systems.de).
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -617,51 +617,6 @@
   </filelist>
  </phprelease>
  <changelog>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
   <release>
    <version>
     <release>0.0.1</release>
@@ -1418,7 +1373,7 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2020-10-14</date>
+   <date>2021-12-18</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * [mjr] Use existing sftp resource when creating url wrapper (PR #1).
@@ -1433,10 +1388,10 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2020-10-14</date>
+   <date>2021-12-18</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
-* 
+* [mjr] Fix parsing top level directories in Smb driver, (PR #3, lang@b1-systems.de).
    </notes>
   </release>
  </changelog>

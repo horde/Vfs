@@ -2,7 +2,8 @@
 v2.4.2
 ------
 
-
+[mjr] Fix parsing top level directories in Smb driver, (PR #3,
+      lang@b1-systems.de).
 
 
 ------
