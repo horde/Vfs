@@ -78,7 +78,7 @@ abstract class Horde_Vfs_Base
             'vfs_quotalimit' => -1,
             'vfs_quotaroot' => ''
         ));
-        $this->setParams($params);
+        $this->setParams((array) $params);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class Horde_Vfs_Base
      */
     public function setParams($params = array())
     {
-        $this->_params = array_merge($this->_params, $params);
+        $this->_params = array_merge($this->_params, (array) $params);
     }
 
     /**
@@ -613,7 +613,8 @@ abstract class Horde_Vfs_Base
             $filter = implode('|', $filter);
         }
 
-        if (!strlen($filter)) {
+        // TODO: PHP 8.1 Disallow other inputs than strings and arrays
+        if (!is_string($filter) || !strlen($filter)) {
             return false;
         }
 

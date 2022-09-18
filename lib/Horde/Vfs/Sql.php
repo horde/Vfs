@@ -517,6 +517,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     protected function _listFolder($path, $filter = null, $dotfiles = true,
                                    $dironly = false)
     {
+        $path = $path ?? '';
         if (!$this->isFolder(dirname($path), basename($path))) {
             throw new Horde_Vfs_Exception(sprintf('"%s" is not a folder.', $path));
         }
@@ -803,7 +804,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
      */
     protected function _convertPath($path)
     {
-        return trim($path, '/');
+        return trim($path ?? '', '/');
     }
 
     /**

@@ -430,6 +430,7 @@ class Horde_Vfs_File extends Horde_Vfs_Base
     protected function _listFolder($path, $filter = null, $dotfiles = true,
                                    $dironly = false)
     {
+        $path = $path ?? '';
         $files = array();
         $dir = $this->_getNativePath(strlen($path) ? $path : '');
 
