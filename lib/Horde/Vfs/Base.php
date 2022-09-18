@@ -78,7 +78,7 @@ abstract class Horde_Vfs_Base
             'vfs_quotalimit' => -1,
             'vfs_quotaroot' => ''
         ));
-        $this->setParams($params);
+        $this->setParams((array) $params);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class Horde_Vfs_Base
      */
     public function setParams($params = array())
     {
-        $this->_params = array_merge($this->_params, $params);
+        $this->_params = array_merge($this->_params, (array) $params);
     }
 
     /**
