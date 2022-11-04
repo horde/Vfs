@@ -2,7 +2,8 @@
 v3.0.0alpha4
 ------------
 
-
+[rla] Release for PHP 8.
+[rla] Safeguard against passing null where string is expected.
 
 
 ------------
@@ -23,7 +24,15 @@ v3.0.0alpha1
 
 
 ------
-v2.4.0
+v2.4.2
+------
+
+[mjr] Fix parsing top level directories in Smb driver, (PR #3,
+      lang@b1-systems.de).
+
+
+------
+v2.4.1
 ------
 
 [mjr] Allow Horde_Vfs::writeData() to accept stream input.

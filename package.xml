@@ -17,21 +17,29 @@
   <email>chuck@horde.org</email>
   <active>no</active>
  </lead>
- <date>2020-03-13</date>
+ <date>2022-11-04</date>
  <version>
-  <release>2.4.1</release>
-  <api>2.4.0</api>
+  <release>3.0.0alpha4</release>
+  <api>3.0.0alpha1</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>alpha</release>
+  <api>alpha</api>
  </stability>
- <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+ <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1-only</license>
  <notes>
-* 
+* [rla] Release for PHP 8.
+* [rla] Safeguard against passing null where string is expected.
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
+   <dir name=".github">
+    <dir name="workflows">
+     <file name="ci.yml" role="php" />
+     <file name="phpdoc.yml" role="php" />
+     <file name="update-satis.yml" role="php" />
+    </dir> <!-- /.github/workflows -->
+   </dir> <!-- /.github -->
    <dir name="bin">
     <file name="horde-vfs" role="script">
      <tasks:replace from="/usr/bin/env php" to="php_bin" type="pear-config" />
@@ -334,46 +342,52 @@
     </dir> <!-- /migration/Horde -->
    </dir> <!-- /migration -->
    <dir name="test">
-    <dir name="Horde">
-     <dir name="Vfs">
-      <dir name="fixtures">
-       <file name="samba1.txt" role="test" />
-       <file name="samba2.txt" role="test" />
-      </dir> <!-- /test/Horde/Vfs/fixtures -->
-      <dir name="Sql">
-       <dir name="Pdo">
-        <file name="MysqlTest.php" role="test" />
-        <file name="PgsqlTest.php" role="test" />
-        <file name="SqliteTest.php" role="test" />
-       </dir> <!-- /test/Horde/Vfs/Sql/Pdo -->
-       <file name="Base.php" role="test" />
-       <file name="MysqliTest.php" role="test" />
-       <file name="MysqlTest.php" role="test" />
-       <file name="Oci8Test.php" role="test" />
-      </dir> <!-- /test/Horde/Vfs/Sql -->
-      <dir name="SqlFile">
-       <dir name="Pdo">
-        <file name="MysqlTest.php" role="test" />
-        <file name="PgsqlTest.php" role="test" />
-        <file name="SqliteTest.php" role="test" />
-       </dir> <!-- /test/Horde/Vfs/SqlFile/Pdo -->
-       <file name="Base.php" role="test" />
-       <file name="MysqliTest.php" role="test" />
-       <file name="MysqlTest.php" role="test" />
-      </dir> <!-- /test/Horde/Vfs/SqlFile -->
-      <file name="AllTests.php" role="test" />
-      <file name="bootstrap.php" role="test" />
-      <file name="conf.php.dist" role="test" />
-      <file name="FileTest.php" role="test" />
-      <file name="FtpTest.php" role="test" />
-      <file name="KolabTest.php" role="test" />
-      <file name="MongoTest.php" role="test" />
-      <file name="SmbTest.php" role="test" />
-      <file name="Ssh2Test.php" role="test" />
-      <file name="TestBase.php" role="test" />
-     </dir> <!-- /test/Horde/Vfs -->
-    </dir> <!-- /test/Horde -->
+    <dir name=".github">
+     <dir name="workflows">
+      <file name="ci.yml" role="test" />
+      <file name="phpdoc.yml" role="test" />
+      <file name="release.yml" role="test" />
+      <file name="update-composer-json.yml" role="test" />
+      <file name="update-satis.yml" role="test" />
+     </dir> <!-- /test/.github/workflows -->
+    </dir> <!-- /test/.github -->
+    <dir name="fixtures">
+     <file name="samba1.txt" role="test" />
+     <file name="samba2.txt" role="test" />
+    </dir> <!-- /test/fixtures -->
+    <dir name="Sql">
+     <dir name="Pdo">
+      <file name="MysqlTest.php" role="test" />
+      <file name="PgsqlTest.php" role="test" />
+      <file name="SqliteTest.php" role="test" />
+     </dir> <!-- /test/Sql/Pdo -->
+     <file name="BaseTestCase.php" role="test" />
+     <file name="MysqliTest.php" role="test" />
+     <file name="MysqlTest.php" role="test" />
+     <file name="Oci8Test.php" role="test" />
+    </dir> <!-- /test/Sql -->
+    <dir name="SqlFile">
+     <dir name="Pdo">
+      <file name="MysqlTest.php" role="test" />
+      <file name="PgsqlTest.php" role="test" />
+      <file name="SqliteTest.php" role="test" />
+     </dir> <!-- /test/SqlFile/Pdo -->
+     <file name="BaseTestCase.php" role="test" />
+     <file name="MysqliTest.php" role="test" />
+     <file name="MysqlTest.php" role="test" />
+    </dir> <!-- /test/SqlFile -->
+    <file name="AllTests.php" role="test" />
+    <file name="bootstrap.php" role="test" />
+    <file name="conf.php.dist" role="test" />
+    <file name="FileTest.php" role="test" />
+    <file name="FtpTest.php" role="test" />
+    <file name="KolabTest.php" role="test" />
+    <file name="MongoTest.php" role="test" />
+    <file name="SmbTest.php" role="test" />
+    <file name="Ssh2Test.php" role="test" />
+    <file name="TestBase.php" role="test" />
    </dir> <!-- /test -->
+   <file name=".php-cs-fixer.dist.php" role="php" />
    <file name="LICENSE" role="doc" />
    <file name="README.rst" role="doc" />
   </dir> <!-- / -->
@@ -381,107 +395,29 @@
  <dependencies>
   <required>
    <php>
-    <min>5.3.0</min>
-    <max>8.0.0alpha1</max>
-    <exclude>8.0.0alpha1</exclude>
+    <min>7.4.0</min>
+    <max>9.0.0alpha1</max>
+    <exclude>9.0.0alpha1</exclude>
    </php>
    <pearinstaller>
     <min>1.7.0</min>
    </pearinstaller>
-   <package>
-    <name>Horde_Exception</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Translation</name>
-    <channel>pear.horde.org</channel>
-    <min>2.2.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Util</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
   </required>
   <optional>
-   <package>
-    <name>Horde_Auth</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Core</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Db</name>
-    <channel>pear.horde.org</channel>
-    <min>2.4.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Kolab_Session</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Mime</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Mongo</name>
-    <channel>pear.horde.org</channel>
-    <min>1.0.0</min>
-    <max>2.0.0alpha1</max>
-    <exclude>2.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Perms</name>
-    <channel>pear.horde.org</channel>
-    <min>2.0.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>Horde_Test</name>
-    <channel>pear.horde.org</channel>
-    <min>2.1.0</min>
-    <max>3.0.0alpha1</max>
-    <exclude>3.0.0alpha1</exclude>
-   </package>
-   <package>
-    <name>ssh2</name>
-    <channel>pecl.php.net</channel>
-    <min>0.12.0</min>
-    <max>2.0.0alpha1</max>
-    <exclude>2.0.0alpha1</exclude>
-    <providesextension>ssh</providesextension>
-   </package>
    <extension>
     <name>ftp</name>
+   </extension>
+   <extension>
+    <name>ssh2</name>
    </extension>
   </optional>
  </dependencies>
  <phprelease>
   <filelist>
+   <install as="workflows/ci.yml" name=".github/workflows/ci.yml" />
+   <install as="workflows/phpdoc.yml" name=".github/workflows/phpdoc.yml" />
+   <install as="workflows/update-satis.yml" name=".github/workflows/update-satis.yml" />
+   <install as="" name=".php-cs-fixer.dist.php" />
    <install as="horde-vfs" name="bin/horde-vfs" />
    <install as="CHANGES" name="doc/Horde/Vfs/CHANGES" />
    <install as="UPGRADING.rst" name="doc/Horde/Vfs/UPGRADING.rst" />
@@ -591,31 +527,36 @@
    <install as="migration/3_horde_vfs_fix_blob_length.php" name="migration/Horde/Vfs/3_horde_vfs_fix_blob_length.php" />
    <install as="migration/4_horde_vfs_upgrade_null_columns.php" name="migration/Horde/Vfs/4_horde_vfs_upgrade_null_columns.php" />
    <install as="README.rst" name="README.rst" />
-   <install as="Horde/Vfs/AllTests.php" name="test/Horde/Vfs/AllTests.php" />
-   <install as="Horde/Vfs/bootstrap.php" name="test/Horde/Vfs/bootstrap.php" />
-   <install as="Horde/Vfs/conf.php.dist" name="test/Horde/Vfs/conf.php.dist" />
-   <install as="Horde/Vfs/FileTest.php" name="test/Horde/Vfs/FileTest.php" />
-   <install as="Horde/Vfs/fixtures/samba1.txt" name="test/Horde/Vfs/fixtures/samba1.txt" />
-   <install as="Horde/Vfs/fixtures/samba2.txt" name="test/Horde/Vfs/fixtures/samba2.txt" />
-   <install as="Horde/Vfs/FtpTest.php" name="test/Horde/Vfs/FtpTest.php" />
-   <install as="Horde/Vfs/KolabTest.php" name="test/Horde/Vfs/KolabTest.php" />
-   <install as="Horde/Vfs/MongoTest.php" name="test/Horde/Vfs/MongoTest.php" />
-   <install as="Horde/Vfs/SmbTest.php" name="test/Horde/Vfs/SmbTest.php" />
-   <install as="Horde/Vfs/Sql/Base.php" name="test/Horde/Vfs/Sql/Base.php" />
-   <install as="Horde/Vfs/Sql/MysqliTest.php" name="test/Horde/Vfs/Sql/MysqliTest.php" />
-   <install as="Horde/Vfs/Sql/MysqlTest.php" name="test/Horde/Vfs/Sql/MysqlTest.php" />
-   <install as="Horde/Vfs/Sql/Oci8Test.php" name="test/Horde/Vfs/Sql/Oci8Test.php" />
-   <install as="Horde/Vfs/Sql/Pdo/MysqlTest.php" name="test/Horde/Vfs/Sql/Pdo/MysqlTest.php" />
-   <install as="Horde/Vfs/Sql/Pdo/PgsqlTest.php" name="test/Horde/Vfs/Sql/Pdo/PgsqlTest.php" />
-   <install as="Horde/Vfs/Sql/Pdo/SqliteTest.php" name="test/Horde/Vfs/Sql/Pdo/SqliteTest.php" />
-   <install as="Horde/Vfs/SqlFile/Base.php" name="test/Horde/Vfs/SqlFile/Base.php" />
-   <install as="Horde/Vfs/SqlFile/MysqliTest.php" name="test/Horde/Vfs/SqlFile/MysqliTest.php" />
-   <install as="Horde/Vfs/SqlFile/MysqlTest.php" name="test/Horde/Vfs/SqlFile/MysqlTest.php" />
-   <install as="Horde/Vfs/SqlFile/Pdo/MysqlTest.php" name="test/Horde/Vfs/SqlFile/Pdo/MysqlTest.php" />
-   <install as="Horde/Vfs/SqlFile/Pdo/PgsqlTest.php" name="test/Horde/Vfs/SqlFile/Pdo/PgsqlTest.php" />
-   <install as="Horde/Vfs/SqlFile/Pdo/SqliteTest.php" name="test/Horde/Vfs/SqlFile/Pdo/SqliteTest.php" />
-   <install as="Horde/Vfs/Ssh2Test.php" name="test/Horde/Vfs/Ssh2Test.php" />
-   <install as="Horde/Vfs/TestBase.php" name="test/Horde/Vfs/TestBase.php" />
+   <install as=".github/workflows/ci.yml" name="test/.github/workflows/ci.yml" />
+   <install as=".github/workflows/phpdoc.yml" name="test/.github/workflows/phpdoc.yml" />
+   <install as=".github/workflows/release.yml" name="test/.github/workflows/release.yml" />
+   <install as=".github/workflows/update-composer-json.yml" name="test/.github/workflows/update-composer-json.yml" />
+   <install as=".github/workflows/update-satis.yml" name="test/.github/workflows/update-satis.yml" />
+   <install as="AllTests.php" name="test/AllTests.php" />
+   <install as="bootstrap.php" name="test/bootstrap.php" />
+   <install as="conf.php.dist" name="test/conf.php.dist" />
+   <install as="FileTest.php" name="test/FileTest.php" />
+   <install as="fixtures/samba1.txt" name="test/fixtures/samba1.txt" />
+   <install as="fixtures/samba2.txt" name="test/fixtures/samba2.txt" />
+   <install as="FtpTest.php" name="test/FtpTest.php" />
+   <install as="KolabTest.php" name="test/KolabTest.php" />
+   <install as="MongoTest.php" name="test/MongoTest.php" />
+   <install as="SmbTest.php" name="test/SmbTest.php" />
+   <install as="Sql/BaseTestCase.php" name="test/Sql/BaseTestCase.php" />
+   <install as="Sql/MysqliTest.php" name="test/Sql/MysqliTest.php" />
+   <install as="Sql/MysqlTest.php" name="test/Sql/MysqlTest.php" />
+   <install as="Sql/Oci8Test.php" name="test/Sql/Oci8Test.php" />
+   <install as="Sql/Pdo/MysqlTest.php" name="test/Sql/Pdo/MysqlTest.php" />
+   <install as="Sql/Pdo/PgsqlTest.php" name="test/Sql/Pdo/PgsqlTest.php" />
+   <install as="Sql/Pdo/SqliteTest.php" name="test/Sql/Pdo/SqliteTest.php" />
+   <install as="SqlFile/BaseTestCase.php" name="test/SqlFile/BaseTestCase.php" />
+   <install as="SqlFile/MysqliTest.php" name="test/SqlFile/MysqliTest.php" />
+   <install as="SqlFile/MysqlTest.php" name="test/SqlFile/MysqlTest.php" />
+   <install as="SqlFile/Pdo/MysqlTest.php" name="test/SqlFile/Pdo/MysqlTest.php" />
+   <install as="SqlFile/Pdo/PgsqlTest.php" name="test/SqlFile/Pdo/PgsqlTest.php" />
+   <install as="SqlFile/Pdo/SqliteTest.php" name="test/SqlFile/Pdo/SqliteTest.php" />
+   <install as="Ssh2Test.php" name="test/Ssh2Test.php" />
+   <install as="TestBase.php" name="test/TestBase.php" />
   </filelist>
  </phprelease>
  <changelog>
@@ -769,7 +710,6 @@
    </notes>
   </release>
   <release>
-   <date>2009-10-15</date>
    <version>
     <release>0.3.0</release>
     <api>0.3.0</api>
@@ -778,6 +718,7 @@
     <release>beta</release>
     <api>beta</api>
    </stability>
+   <date>2009-10-15</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * Allow access to files with multiple consecutive dots in the name (valentin.vidic@carnet.hr; Horde Bug #7646).
@@ -872,10 +813,12 @@
   <release>
    <version>
     <release>1.0.1</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-04-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -886,10 +829,12 @@
   <release>
    <version>
     <release>1.0.2</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-05-18</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -899,10 +844,12 @@
   <release>
    <version>
     <release>1.0.3</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-06-14</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -912,10 +859,12 @@
   <release>
    <version>
     <release>1.0.4</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-07-27</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -927,10 +876,12 @@
   <release>
    <version>
     <release>1.0.5</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-09-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -941,10 +892,12 @@
   <release>
    <version>
     <release>1.0.6</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-10-11</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -957,10 +910,12 @@
   <release>
    <version>
     <release>1.0.7</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-10-18</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -972,10 +927,12 @@
   <release>
    <version>
     <release>1.0.8</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2011-11-08</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -985,10 +942,12 @@
   <release>
    <version>
     <release>1.0.9</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-03-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1003,10 +962,12 @@
   <release>
    <version>
     <release>1.0.10</release>
-    <api>1.0.0</api></version>
+    <api>1.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-03-20</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1014,8 +975,6 @@
    </notes>
   </release>
   <release>
-   <date>2012-07-06</date>
-   <time>15:07:55</time>
    <version>
     <release>2.0.0alpha1</release>
     <api>2.0.0alpha1</api>
@@ -1024,6 +983,7 @@
     <release>alpha</release>
     <api>alpha</api>
    </stability>
+   <date>2012-07-06</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * First alpha release for Horde 5.
@@ -1035,10 +995,12 @@
   <release>
    <version>
     <release>2.0.0beta1</release>
-    <api>2.0.0beta1</api></version>
+    <api>2.0.0beta1</api>
+   </version>
    <stability>
     <release>beta</release>
-    <api>beta</api></stability>
+    <api>beta</api>
+   </stability>
    <date>2012-07-19</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1049,10 +1011,12 @@
   <release>
    <version>
     <release>2.0.0beta2</release>
-    <api>2.0.0beta1</api></version>
+    <api>2.0.0beta1</api>
+   </version>
    <stability>
     <release>beta</release>
-    <api>beta</api></stability>
+    <api>beta</api>
+   </stability>
    <date>2012-10-12</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1062,10 +1026,12 @@
   <release>
    <version>
     <release>2.0.0RC1</release>
-    <api>2.0.0beta1</api></version>
+    <api>2.0.0beta1</api>
+   </version>
    <stability>
     <release>beta</release>
-    <api>beta</api></stability>
+    <api>beta</api>
+   </stability>
    <date>2012-10-26</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1075,10 +1041,12 @@
   <release>
    <version>
     <release>2.0.0</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-10-30</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1088,10 +1056,12 @@
   <release>
    <version>
     <release>2.0.1</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-11-06</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1101,10 +1071,12 @@
   <release>
    <version>
     <release>2.0.2</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-11-14</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1115,10 +1087,12 @@
   <release>
    <version>
     <release>2.0.3</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2012-11-27</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1128,10 +1102,12 @@
   <release>
    <version>
     <release>2.0.4</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2013-01-10</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1143,10 +1119,12 @@
   <release>
    <version>
     <release>2.1.0</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2013-05-06</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1157,10 +1135,12 @@
   <release>
    <version>
     <release>2.1.1</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2013-07-16</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1170,10 +1150,12 @@
   <release>
    <version>
     <release>2.1.2</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2013-10-28</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1183,10 +1165,12 @@
   <release>
    <version>
     <release>2.2.0</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2014-03-03</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1198,10 +1182,12 @@
   <release>
    <version>
     <release>2.2.1</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2015-01-09</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1212,10 +1198,12 @@
   <release>
    <version>
     <release>2.2.2</release>
-    <api>2.0.0</api></version>
+    <api>2.0.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2015-02-10</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1227,10 +1215,12 @@
   <release>
    <version>
     <release>2.3.0</release>
-    <api>2.3.0</api></version>
+    <api>2.3.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2015-07-31</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1242,10 +1232,12 @@
   <release>
    <version>
     <release>2.3.1</release>
-    <api>2.3.0</api></version>
+    <api>2.3.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2016-02-02</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1255,10 +1247,12 @@
   <release>
    <version>
     <release>2.3.2</release>
-    <api>2.3.0</api></version>
+    <api>2.3.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2016-03-21</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1268,10 +1262,12 @@
   <release>
    <version>
     <release>2.3.3</release>
-    <api>2.3.0</api></version>
+    <api>2.3.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2016-07-02</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1283,10 +1279,12 @@
   <release>
    <version>
     <release>2.3.4</release>
-    <api>2.3.0</api></version>
+    <api>2.3.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2016-12-03</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1295,11 +1293,13 @@
   </release>
   <release>
    <version>
-    <release>2.4.0</release>
-    <api>2.4.0</api></version>
+    <release>2.4.1</release>
+    <api>2.4.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
+    <api>stable</api>
+   </stability>
    <date>2017-02-27</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
@@ -1309,15 +1309,78 @@
   </release>
   <release>
    <version>
-    <release>2.4.1</release>
-    <api>2.4.0</api></version>
+    <release>2.4.2</release>
+    <api>2.4.0</api>
+   </version>
    <stability>
     <release>stable</release>
-    <api>stable</api></stability>
-   <date>2020-03-13</date>
+    <api>stable</api>
+   </stability>
+   <date>2021-12-18</date>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+   <notes>
+* [mjr] Fix parsing top level directories in Smb driver, (PR #3, lang@b1-systems.de).
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.0.0alpha1</release>
+    <api>3.0.0alpha1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2021-02-24</date>
    <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
    <notes>
 * 
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.0.0alpha2</release>
+    <api>3.0.0alpha1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2021-02-24</date>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+   <notes>
+* |+
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.0.0alpha3</release>
+    <api>3.0.0alpha1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2021-03-13</date>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+   <notes>
+* |+
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.0.0alpha4</release>
+    <api>3.0.0alpha1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2021-03-13</date>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1-only</license>
+   <notes>
+* [rla] Release for PHP 8.
+* [rla] Safeguard against passing null where string is expected.
    </notes>
   </release>
  </changelog>
