@@ -15,7 +15,7 @@ require_once __DIR__ . '/../Base.php';
  */
 class Horde_Vfs_Sql_Pdo_SqliteTest extends Horde_Vfs_Test_Sql_Base
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $factory_db = new Horde_Test_Factory_Db();
 

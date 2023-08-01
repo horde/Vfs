@@ -22,6 +22,8 @@ class Horde_Vfs_FtpTest extends Horde_Vfs_TestBase
 
     public function testCreateFolder()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_createFolderStructure();
     }
 
@@ -30,6 +32,8 @@ class Horde_Vfs_FtpTest extends Horde_Vfs_TestBase
      */
     public function testWriteData()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_writeData();
     }
 
@@ -38,6 +42,8 @@ class Horde_Vfs_FtpTest extends Horde_Vfs_TestBase
      */
     public function testWrite()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_write();
     }
 
@@ -170,7 +176,7 @@ class Horde_Vfs_FtpTest extends Horde_Vfs_TestBase
         $this->_nullRoot();
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('ftp')) {
             self::$reason = 'No ftp extension';
@@ -184,7 +190,7 @@ class Horde_Vfs_FtpTest extends Horde_Vfs_TestBase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$vfs) {
             try {

@@ -15,7 +15,7 @@ require_once __DIR__ . '/../Base.php';
  */
 class Horde_Vfs_Sql_Pdo_PgsqlTest extends Horde_Vfs_Test_Sql_Base
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') ||
             !in_array('pgsql', PDO::getAvailableDrivers())) {

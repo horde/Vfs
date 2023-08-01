@@ -164,7 +164,7 @@ class Horde_Vfs_Test_SqlFile_Base extends Horde_Vfs_TestBase
         $this->_nullRoot();
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // The SqlFile VFS driver needs to be refactored to a real composite
         // driver.
@@ -190,7 +190,7 @@ class Horde_Vfs_Test_SqlFile_Base extends Horde_Vfs_TestBase
         self::$vfs = new Horde_Vfs_SqlFile(array('db' => self::$db));
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$migrator) {
             self::$migrator->down();
@@ -200,7 +200,7 @@ class Horde_Vfs_Test_SqlFile_Base extends Horde_Vfs_TestBase
         parent::tearDownAfterClass();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->markTestIncomplete('The SqlFile VFS driver needs to be refactored to a real composite driver.');
         parent::setUp();

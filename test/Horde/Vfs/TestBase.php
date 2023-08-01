@@ -13,14 +13,14 @@ class Horde_Vfs_TestBase extends Horde_Test_Case
     protected static $reason = '';
     protected static $vfs;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!self::$vfs) {
             $this->markTestSkipped(self::$reason);
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$vfs = null;
     }

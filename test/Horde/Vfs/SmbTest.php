@@ -15,7 +15,7 @@
  */
 class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $config = self::getConfig('VFS_SMB_TEST_CONFIG', __DIR__);
         if ($config && !empty($config['vfs']['smb'])) {
@@ -29,7 +29,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$vfs) {
             try {
@@ -41,7 +41,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
         parent::tearDownAfterClass();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +49,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
         date_default_timezone_set('Europe/Berlin');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         date_default_timezone_set($this->_oldTimezone);
     }
@@ -61,6 +61,8 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
 
     public function testCreateFolder()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_createFolderStructure();
     }
 
@@ -69,6 +71,8 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
      */
     public function testWriteData()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_writeData();
     }
 
@@ -77,6 +81,8 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
      */
     public function testWrite()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_write();
     }
 
@@ -226,7 +232,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
         $vfs = new Horde_Vfs_Smb();
 
         $listing = $vfs->parseListing(file(__DIR__ . '/fixtures/samba1.txt'), null, true, false);
-        $this->assertInternalType('array', $listing);
+        $this->assertIsArray($listing);
         $this->assertEquals(7, count($listing));
         $this->assertEquals(
             array (
@@ -304,7 +310,7 @@ class Horde_Vfs_SmbTest extends Horde_Vfs_TestBase
             $listing);
 
         $listing = $vfs->parseListing(file(__DIR__ . '/fixtures/samba2.txt'), null, true, false);
-        $this->assertInternalType('array', $listing);
+        $this->assertIsArray($listing);
         $this->assertEquals(26, count($listing));
         $this->assertEquals(
             array (

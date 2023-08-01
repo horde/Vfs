@@ -24,6 +24,8 @@ class Horde_Vfs_FileTest extends Horde_Vfs_TestBase
 
     public function testCreateFolder()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_createFolderStructure();
     }
 
@@ -32,6 +34,8 @@ class Horde_Vfs_FileTest extends Horde_Vfs_TestBase
      */
     public function testWriteData()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_writeData();
     }
 
@@ -40,6 +44,8 @@ class Horde_Vfs_FileTest extends Horde_Vfs_TestBase
      */
     public function testWrite()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_write();
     }
 
@@ -171,12 +177,11 @@ class Horde_Vfs_FileTest extends Horde_Vfs_TestBase
         $this->_listFolder();
     }
 
-    /**
-     * @expectedException Horde_Vfs_Exception
-     * @expectedExceptionMessage Unable to access VFS directory root.
-     */
     public function testListFolderWithoutPermissions()
     {
+        $this->expectException('Horde_Vfs_Exception');
+        $this->expectExceptionMessage('Unable to access VFS directory root.');
+
         if (!is_dir('/root')) {
             $this->markTestSkipped('No /root folder to test permissions.');
         }
@@ -203,17 +208,17 @@ class Horde_Vfs_FileTest extends Horde_Vfs_TestBase
         $this->assertFileExists($path);
         $this->assertStringEqualsFile($path, 'some content');
         self::$vfs->delete($dir, $file);
-        $this->assertFileNotExists($path);
+        $this->assertFileDoesNotExist($path);
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$vfs = Horde_Vfs::factory('File', array(
             'vfsroot' => sys_get_temp_dir() . '/vfsfiletest'
         ));
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         system('rm -r ' . sys_get_temp_dir() . '/vfsfiletest');
         parent::tearDownAfterClass();

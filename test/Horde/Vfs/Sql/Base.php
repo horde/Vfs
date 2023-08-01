@@ -21,6 +21,8 @@ class Horde_Vfs_Test_Sql_Base extends Horde_Vfs_TestBase
 
     public function testCreateFolder()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_createFolderStructure();
     }
 
@@ -29,6 +31,8 @@ class Horde_Vfs_Test_Sql_Base extends Horde_Vfs_TestBase
      */
     public function testWriteData()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_writeData();
     }
 
@@ -37,6 +41,8 @@ class Horde_Vfs_Test_Sql_Base extends Horde_Vfs_TestBase
      */
     public function testWrite()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->_write();
     }
 
@@ -164,7 +170,7 @@ class Horde_Vfs_Test_Sql_Base extends Horde_Vfs_TestBase
         $this->_nullRoot();
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $logger = new Horde_Log_Logger(new Horde_Log_Handler_Cli());
         //self::$db->setLogger($logger);
@@ -186,7 +192,7 @@ class Horde_Vfs_Test_Sql_Base extends Horde_Vfs_TestBase
         self::$vfs = new Horde_Vfs_Sql(array('db' => self::$db));
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$migrator) {
             if (self::$db) {
