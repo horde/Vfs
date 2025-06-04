@@ -586,10 +586,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
                     $file['date'] = strtotime('00:00:00 ' . $item[5] . ' ' . $item[4] . ' ' . $item[6]);
                 }
 
-                $file['name'] = $item[7];
-                for ($index = 8, $c = count($item); $index < $c; $index++) {
-                    $file['name'] .= ' ' . $item[$index];
-                }
+                $file['name'] = substr($line, 64);
             } else {
                 /* Handle Windows FTP servers returning DOS-style file
                  * listings. */
