@@ -43,7 +43,6 @@ dependencies:
       horde/auth: ^3
       horde/core: ^3
       horde/db: ^3
-      horde/kolab_session: ^3
       horde/mime: ^3
       horde/mongo: ^2
       horde/perms: ^3
