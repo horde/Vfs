@@ -4,14 +4,12 @@ class HordeVfsUpgradeAutoIncrement extends Horde_Db_Migration_Base
     public function up()
     {
         $this->changeColumn('horde_vfs', 'vfs_id', 'autoincrementKey');
-        try {
+        if (in_array('horde_vfs_seq', $this->tables())) {
             $this->dropTable('horde_vfs_seq');
-        } catch (Horde_Db_Exception $e) {
         }
         $this->changeColumn('horde_muvfs', 'vfs_id', 'autoincrementKey');
-        try {
+        if (in_array('horde_muvfs_seq', $this->tables())) {
             $this->dropTable('horde_muvfs_seq');
-        } catch (Horde_Db_Exception $e) {
         }
     }
 
