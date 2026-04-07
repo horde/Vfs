@@ -21,6 +21,9 @@ use Horde_Vfs;
 use Horde_Vfs_Exception;
 use PHPUnit\Framework\Attributes\Depends;
 
+/**
+ * @coversNothing
+ */
 class Ssh2Test extends TestBase
 {
     public function testListEmpty(): void

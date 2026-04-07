@@ -15,6 +15,7 @@ use Horde_Vfs_Base;
 use Horde_Vfs_Gc;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 #[CoversClass(Horde_Vfs_Gc::class)]
 class GcTest extends TestCase
@@ -51,7 +52,7 @@ class GcTest extends TestCase
             'Horde_Vfs_Gc::gc() method should exist'
         );
 
-        $reflection = new \ReflectionMethod(Horde_Vfs_Gc::class, 'gc');
+        $reflection = new ReflectionMethod(Horde_Vfs_Gc::class, 'gc');
         $this->assertTrue($reflection->isStatic());
         $this->assertCount(3, $reflection->getParameters());
     }

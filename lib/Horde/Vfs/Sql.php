@@ -1,4 +1,5 @@
 <?php
+
 /**
  * VFS implementation for Horde's database abstraction layer.
  *
@@ -12,7 +13,7 @@
  * The table structure for the VFS can be created with the horde-db-migrate
  * script from the Horde_Db package.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -26,10 +27,10 @@
 class Horde_Vfs_Sql extends Horde_Vfs_Base
 {
     /* File value for vfs_type column. */
-    const FILE = 1;
+    public const FILE = 1;
 
     /* Folder value for vfs_type column. */
-    const FOLDER = 2;
+    public const FOLDER = 2;
 
     /**
      * Handle for the current database connection.
@@ -43,25 +44,25 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_permissions = array();
+    protected $_permissions = [];
 
     /**
      * List of features that the VFS driver supports.
      *
      * @var array
      */
-    protected $_features = array(
+    protected $_features = [
         'readByteRange' => true,
-    );
+    ];
 
     /**
      * Constructor.
      *
      * @param array $params  A hash containing connection parameters.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
-        $params = array_merge(array('table' => 'horde_vfs'), $params);
+        $params = array_merge(['table' => 'horde_vfs'], $params);
         parent::__construct($params);
         $this->_db = $this->_params['db'];
         unset($this->_params['db']);
@@ -80,7 +81,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     {
         $length_op = $this->_getFileSizeOp();
         $path = $this->_convertPath($path);
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
         $sql = sprintf(
             'SELECT %s(vfs_data) FROM %s WHERE vfs_path %s AND vfs_name = ?',
             $length_op,
@@ -113,22 +114,24 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     {
         try {
             $where = null;
-            $params = array();
+            $params = [];
             if (strlen($path)) {
                 $where = 'WHERE vfs_path = ? OR vfs_path LIKE ?';
                 $path = $this->_convertPath($path);
-                $params = array($path, $path . '/%');
+                $params = [$path, $path . '/%'];
             }
-            $sql = sprintf('SELECT SUM(%s(vfs_data)) FROM %s %s',
-                           $this->_getFileSizeOp(),
-                           $this->_params['table'],
-                           $where);
+            $sql = sprintf(
+                'SELECT SUM(%s(vfs_data)) FROM %s %s',
+                $this->_getFileSizeOp(),
+                $this->_params['table'],
+                $where
+            );
             $size = $this->_db->selectValue($sql, $params);
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
 
-        return (int)$size;
+        return (int) $size;
     }
 
     /**
@@ -142,10 +145,10 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
      */
     public function read($path, $name)
     {
-        return $this->_readBlob($this->_params['table'], 'vfs_data', array(
+        return $this->_readBlob($this->_params['table'], 'vfs_data', [
             'vfs_path' => $this->_convertPath($path),
-            'vfs_name' => $name
-        ));
+            'vfs_name' => $name,
+        ]);
     }
 
     /**
@@ -170,14 +173,14 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
      */
     public function readByteRange($path, $name, &$offset, $length, &$remaining)
     {
-        $data = $this->_readBlob($this->_params['table'], 'vfs_data', array(
+        $data = $this->_readBlob($this->_params['table'], 'vfs_data', [
             'vfs_path' => $this->_convertPath($path),
-            'vfs_name' => $name
-        ));
+            'vfs_name' => $name,
+        ]);
 
         // Calculate how many bytes MUST be read, so the remainging
         // bytes and the new offset can be calculated correctly.
-        $size = strlen ($data);
+        $size = strlen($data);
         if ($length == -1 || (($length + $offset) > $size)) {
             $length = $size - $offset;
         }
@@ -212,7 +215,11 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         }
 
         $result = $this->writeData(
-            $path, $name, $stream, $autocreate);
+            $path,
+            $name,
+            $stream,
+            $autocreate
+        );
         fclose($stream);
 
         return $result;
@@ -235,7 +242,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         $this->_checkQuotaWrite('string', $data, $path, $name);
 
         $path = $this->_convertPath($path);
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
 
         /* Check to see if the data already exists. */
         try {
@@ -251,9 +258,13 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         }
 
         if ($id) {
-            $this->_updateBlob($this->_params['table'], 'vfs_data', $data,
-                               array('vfs_id' => $id),
-                               array('vfs_modified' => time()));
+            $this->_updateBlob(
+                $this->_params['table'],
+                'vfs_data',
+                $data,
+                ['vfs_id' => $id],
+                ['vfs_modified' => time()]
+            );
             return;
         }
 
@@ -269,13 +280,13 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             $this->autocreatePath($path);
         }
 
-        return $this->_insertBlob($this->_params['table'], 'vfs_data', $data, array(
+        return $this->_insertBlob($this->_params['table'], 'vfs_data', $data, [
             'vfs_type' => self::FILE,
             'vfs_path' => strlen($path) ? $path : null,
             'vfs_name' => $name,
             'vfs_modified' => time(),
-            'vfs_owner' => $this->_params['user']
-        ));
+            'vfs_owner' => $this->_params['user'],
+        ]);
     }
 
     /**
@@ -291,7 +302,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         $this->_checkQuotaDelete($path, $name);
 
         $path = $this->_convertPath($path);
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
 
         try {
             $sql = sprintf(
@@ -327,7 +338,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             $parent = '';
             $path = $newpath;
         } else {
-            list($parent, $path) = explode('/', $newpath, 2);
+            [$parent, $path] = explode('/', $newpath, 2);
         }
 
         if (!$this->isFolder($parent, $path)) {
@@ -339,7 +350,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         if (!strlen($newpath)) {
             $newpath = null;
         }
-        list($op, $values) = $this->_nullString($oldpath);
+        [$op, $values] = $this->_nullString($oldpath);
 
         $sql  = sprintf(
             'UPDATE %s SET vfs_path = ?, vfs_name = ?, vfs_modified = ? WHERE vfs_path %s AND vfs_name = ?',
@@ -347,9 +358,9 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             $op
         );
         $values = array_merge(
-            array($newpath, $newname, time()),
+            [$newpath, $newname, time()],
             $values,
-            array($oldname)
+            [$oldname]
         );
 
         try {
@@ -383,7 +394,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             'INSERT INTO %s (vfs_type, vfs_path, vfs_name, vfs_modified, vfs_owner) VALUES (?, ?, ?, ?, ?)',
             $this->_params['table']
         );
-        $values = array(self::FOLDER, $path, $name, time(), $this->_params['user'] ?: null);
+        $values = [self::FOLDER, $path, $name, time(), $this->_params['user'] ?: null];
 
         try {
             $this->_db->insert($sql, $values);
@@ -413,15 +424,15 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         if ($path == '.') {
             $path = '';
         }
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
         try {
-            return (bool)$this->_db->selectValue(
+            return (bool) $this->_db->selectValue(
                 sprintf(
                     'SELECT 1 FROM %s WHERE vfs_type = ? AND vfs_path %s AND vfs_name = ?',
                     $this->_params['table'],
                     $op
                 ),
-                array_merge(array(self::FOLDER), $values, array($name))
+                array_merge([self::FOLDER], $values, [$name])
             );
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
@@ -458,9 +469,11 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         /* First delete everything below the folder, so if error we get no
          * orphans. */
         try {
-            $sql = sprintf('DELETE FROM %s WHERE vfs_path %s',
-                           $this->_params['table'],
-                           ' LIKE ' . $this->_db->quote($this->_getNativePath($folderPath, '%')));
+            $sql = sprintf(
+                'DELETE FROM %s WHERE vfs_path %s',
+                $this->_params['table'],
+                ' LIKE ' . $this->_db->quote($this->_getNativePath($folderPath, '%'))
+            );
             $this->_db->delete($sql);
         } catch (Horde_Db_Exception $e) {
             $this->_vfsSize = null;
@@ -468,7 +481,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         }
 
         /* Now delete everything inside the folder. */
-        list ($op, $values) = $this->_nullString($folderPath);
+        [$op, $values] = $this->_nullString($folderPath);
         try {
             $sql = sprintf(
                 'DELETE FROM %s WHERE vfs_path %s',
@@ -482,7 +495,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         }
 
         /* All ok now delete the actual folder */
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
         try {
             $sql = sprintf(
                 'DELETE FROM %s WHERE vfs_path %s AND vfs_name = ?',
@@ -514,16 +527,19 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
-        $path = $path ?? '';
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
+        $path ??= '';
         if (!$this->isFolder(dirname($path), basename($path))) {
             throw new Horde_Vfs_Exception(sprintf('"%s" is not a folder.', $path));
         }
 
         $path = $this->_convertPath($path);
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
 
         try {
             $length_op = $this->_getFileSizeOp();
@@ -538,7 +554,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             throw new Horde_Vfs_Exception($e);
         }
 
-        $files = array();
+        $files = [];
         foreach ($fileList as $line) {
             // Filter out dotfiles if they aren't wanted.
             if (!$dotfiles && substr($line['vfs_name'], 0, 1) == '.') {
@@ -563,7 +579,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             }
 
             $file['date'] = $line['vfs_modified'];
-            $file['owner'] = isset($line['vfs_owner']) ? $line['vfs_owner'] : '';
+            $file['owner'] = $line['vfs_owner'] ?? '';
             $file['perms'] = '';
             $file['group'] = '';
 
@@ -596,16 +612,16 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     public function gc($path, $secs = 345600)
     {
         $path = $this->_convertPath($path);
-        list($op, $values) = $this->_nullString($path);
+        [$op, $values] = $this->_nullString($path);
         $sql = sprintf(
             'DELETE FROM %s WHERE vfs_type = ? AND vfs_modified < ? AND (vfs_path %s OR vfs_path LIKE ?)',
             $this->_params['table'],
             $op
         );
         $values = array_merge(
-            array(self::FILE, time() - $secs),
+            [self::FILE, time() - $secs],
             $values,
-            array($path . '/%')
+            [$path . '/%']
         );
 
         try {
@@ -632,7 +648,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             'SELECT vfs_name FROM %s WHERE vfs_type = ? AND vfs_path = ?',
             $this->_params['table']
         );
-        $values = array(self::FOLDER, $this->_getNativePath($oldpath, $oldname));
+        $values = [self::FOLDER, $this->_getNativePath($oldpath, $oldname)];
 
         try {
             $folderList = $this->_db->selectValues($sql, $values);
@@ -648,10 +664,10 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             'UPDATE %s SET vfs_path = ? WHERE vfs_path = ?',
             $this->_params['table']
         );
-        $values = array(
+        $values = [
             $this->_getNativePath($newpath, $newname),
-            $this->_getNativePath($oldpath, $oldname)
-        );
+            $this->_getNativePath($oldpath, $oldname),
+        ];
 
         try {
             $this->_db->update($sql, $values);
@@ -675,8 +691,8 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
             return $name;
         }
 
-        if (isset($this->_params['home']) &&
-            preg_match('|^~/?(.*)$|', $path, $matches)) {
+        if (isset($this->_params['home'])
+            && preg_match('|^~/?(.*)$|', $path, $matches)) {
             $path = $this->_params['home'] . '/' . $matches[1];
         }
 
@@ -700,19 +716,21 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
         }
 
         $where = '';
-        $values = array();
+        $values = [];
         foreach ($criteria as $key => $value) {
             if (!empty($where)) {
                 $where .= ' AND ';
             }
-            list($op, $val) = $this->_nullString($value);
+            [$op, $val] = $this->_nullString($value);
             $where .= $key . ' ' . $op;
             $values = array_merge($values, $val);
         }
 
         $sql = sprintf(
             'SELECT %s FROM %s WHERE %s',
-            $field, $table, $where
+            $field,
+            $table,
+            $where
         );
 
         try {
@@ -767,7 +785,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     protected function _updateBlob($table, $field, $data, $where, $alsoupdate)
     {
         $wherestring = '';
-        $wherevalues = array();
+        $wherevalues = [];
         foreach ($where as $key => $value) {
             if (!empty($wherestring)) {
                 $wherestring .= ' AND ';
@@ -782,9 +800,9 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
                 $table,
                 array_merge(
                     $alsoupdate,
-                    array($field => new Horde_Db_Value_Binary($data))
+                    [$field => new Horde_Db_Value_Binary($data)]
                 ),
-                array($wherestring, $wherevalues)
+                [$wherestring, $wherevalues]
             );
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
@@ -815,12 +833,12 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     protected function _getFileSizeOp()
     {
         switch ($this->_db->adapterName()) {
-        case 'PostgreSQL':
-        case 'PDO_PostgreSQL':
-            return 'OCTET_LENGTH';
+            case 'PostgreSQL':
+            case 'PDO_PostgreSQL':
+                return 'OCTET_LENGTH';
 
-        default:
-            return 'LENGTH';
+            default:
+                return 'LENGTH';
         }
     }
 
@@ -836,7 +854,7 @@ class Horde_Vfs_Sql extends Horde_Vfs_Base
     protected function _nullString($value)
     {
         return strlen($value)
-            ? array('= ?', array($value))
-            : array('IS NULL', array());
+            ? ['= ?', [$value]]
+            : ['IS NULL', []];
     }
 }

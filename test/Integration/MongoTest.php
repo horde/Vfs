@@ -19,7 +19,11 @@ namespace Horde\Vfs\Test\Integration;
 
 use Horde_Vfs;
 use PHPUnit\Framework\Attributes\Depends;
+use Horde_Test_Factory_Mongo;
 
+/**
+ * @coversNothing
+ */
 class MongoTest extends TestBase
 {
     protected static $_mongo;
@@ -155,21 +159,21 @@ class MongoTest extends TestBase
             self::$reason = 'Horde_Test_Factory_Mongo not available.';
             return;
         }
-        if (($config = ConfigHelper::getConfig('VFS_MONGO_TEST_CONFIG', __DIR__ . '/..')) &&
-            isset($config['vfs']['mongo']['hostspec'])) {
-            $factory = new \Horde_Test_Factory_Mongo();
-            self::$_mongo = $factory->create(array(
+        if (($config = ConfigHelper::getConfig('VFS_MONGO_TEST_CONFIG', __DIR__ . '/..'))
+            && isset($config['vfs']['mongo']['hostspec'])) {
+            $factory = new Horde_Test_Factory_Mongo();
+            self::$_mongo = $factory->create([
                 'config' => $config['vfs']['mongo']['hostspec'],
-                'dbname' => 'horde_vfs_mongodbtest'
-            ));
+                'dbname' => 'horde_vfs_mongodbtest',
+            ]);
         }
 
         if (empty(self::$_mongo)) {
             self::$reason = 'MongoDB not available.';
         } else {
-            self::$vfs = Horde_Vfs::factory('Mongo', array(
-                'mongo_db' => self::$_mongo
-            ));
+            self::$vfs = Horde_Vfs::factory('Mongo', [
+                'mongo_db' => self::$_mongo,
+            ]);
         }
     }
 

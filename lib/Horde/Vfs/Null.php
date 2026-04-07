@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2014-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2014-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -14,7 +15,7 @@
 /**
  * Null implementation of the VFS API.
  *
- * Copyright 2014-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2014-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -59,52 +60,41 @@ class Horde_Vfs_Null extends Horde_Vfs_Base
 
     /**
      */
-    public function write($path, $name, $tmpFile, $autocreate = false)
-    {
+    public function write($path, $name, $tmpFile, $autocreate = false) {}
+
+    /**
+     */
+    public function writeData($path, $name, $data, $autocreate = false) {}
+
+    /**
+     */
+    public function deleteFile($path, $name) {}
+
+    /**
+     */
+    public function rename($oldpath, $oldname, $newpath, $newname) {}
+
+    /**
+     */
+    public function createFolder($path, $name) {}
+
+    /**
+     */
+    public function deleteFolder($path, $name, $recursive = false) {}
+
+    /**
+     */
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
+        return [];
     }
 
     /**
      */
-    public function writeData($path, $name, $data, $autocreate = false)
-    {
-    }
-
-    /**
-     */
-    public function deleteFile($path, $name)
-    {
-    }
-
-    /**
-     */
-    public function rename($oldpath, $oldname, $newpath, $newname)
-    {
-    }
-
-    /**
-     */
-    public function createFolder($path, $name)
-    {
-    }
-
-    /**
-     */
-    public function deleteFolder($path, $name, $recursive = false)
-    {
-    }
-
-    /**
-     */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
-        return array();
-    }
-
-    /**
-     */
-    public function changePermissions($path, $name, $permission)
-    {
-    }
+    public function changePermissions($path, $name, $permission) {}
 
 }

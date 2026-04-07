@@ -15,13 +15,17 @@ namespace Horde\Vfs\Test\Integration\Sql\Pdo;
 use Horde\Vfs\Test\Integration\Sql\BaseTestCase;
 use Horde_Db_Adapter_Pdo_Sqlite;
 use PDO;
+use Exception;
 
+/**
+ * @coversNothing
+ */
 class SqliteTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (!extension_loaded('pdo') ||
-            !in_array('sqlite', PDO::getAvailableDrivers())) {
+        if (!extension_loaded('pdo')
+            || !in_array('sqlite', PDO::getAvailableDrivers())) {
             self::$reason = 'No sqlite extension or no sqlite PDO driver';
             return;
         }
@@ -35,7 +39,7 @@ class SqliteTest extends BaseTestCase
                 'charset' => 'utf-8',
             ]);
             parent::setUpBeforeClass();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             self::$reason = 'Sqlite not available: ' . $e->getMessage();
         }
     }

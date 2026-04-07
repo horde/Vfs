@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2013-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2013-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -23,17 +24,17 @@
 class Horde_Vfs_Mongo extends Horde_Vfs_Base
 {
     /* Metadata subdocument identifier. */
-    const MD = 'metadata';
+    public const MD = 'metadata';
 
     /* Field (metadata) names. */
-    const FNAME = 'vfile';
-    const OWNER = 'owner';
-    const PATH = 'vpath';
+    public const FNAME = 'vfile';
+    public const OWNER = 'owner';
+    public const PATH = 'vpath';
 
     /* Field (folders) names. */
-    const FOLDER_OWNER = 'owner';
-    const FOLDER_PATH = 'path';
-    const FOLDER_TS = 'ts';
+    public const FOLDER_OWNER = 'owner';
+    public const FOLDER_PATH = 'path';
+    public const FOLDER_TS = 'ts';
 
     /**
      * The MongoDB GridFS object for the VFS data.
@@ -59,16 +60,16 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      *   - mongo_db: [REQUIRED] (Horde_Mongo_Client) A MongoDB client object.
      * </pre>
      */
-    public function __construct(array $params = array())
+    public function __construct(array $params = [])
     {
         if (!isset($params['mongo_db'])) {
             throw new InvalidArgumentException('Missing mongo_db parameter.');
         }
 
-        parent::__construct(array_merge(array(
+        parent::__construct(array_merge([
             'collection' => 'horde_vfs_folders',
-            'gridfs' => 'horde_vfs'
-        ), $params));
+            'gridfs' => 'horde_vfs',
+        ], $params));
 
         $this->_files = $this->_params['mongo_db']->selectDB(null)->getGridFS($this->_params['gridfs']);
         $this->_folders = $this->_params['mongo_db']->selectDB(null)->selectCollection($this->_params['collection']);
@@ -89,11 +90,11 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      */
     public function getFolderSize($path = null)
     {
-        $query = array();
+        $query = [];
         if (!is_null($path)) {
-            $query[$this->_mdKey(self::PATH)] = array(
-                '$regex' => '^' . $this->_convertPath($path)
-            );
+            $query[$this->_mdKey(self::PATH)] = [
+                '$regex' => '^' . $this->_convertPath($path),
+            ];
         }
 
         $size = 0;
@@ -185,30 +186,30 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
         }
 
         $orig = $this->_getFile($path, $name);
-        $mdata = array(
-            self::MD => array(
+        $mdata = [
+            self::MD => [
                 self::FNAME => $name,
                 self::OWNER => $this->_params['user'],
-                self::PATH => $this->_convertPath($path)
-            )
-        );
+                self::PATH => $this->_convertPath($path),
+            ],
+        ];
 
         try {
             switch ($type) {
-            case 'file':
-                $this->_files->storeFile($data, $mdata);
-                break;
+                case 'file':
+                    $this->_files->storeFile($data, $mdata);
+                    break;
 
-            case 'string':
-                // MONGO currently has no ability to stream data TO the
-                // server. I.e., there is no opposite version of
-                // MongoGridFSFile::getResource().
-                $data = $this->_ensureSeekable($data);
-                if (is_resource($data)) {
-                    $data = stream_get_contents($data);
-                }
-                $this->_files->storeBytes($data, $mdata);
-                break;
+                case 'string':
+                    // MONGO currently has no ability to stream data TO the
+                    // server. I.e., there is no opposite version of
+                    // MongoGridFSFile::getResource().
+                    $data = $this->_ensureSeekable($data);
+                    if (is_resource($data)) {
+                        $data = stream_get_contents($data);
+                    }
+                    $this->_files->storeBytes($data, $mdata);
+                    break;
             }
         } catch (MongoException $e) {
             throw new Horde_Vfs_Exception('Unable to write file data.');
@@ -255,15 +256,16 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      */
     public function createFolder($path, $name)
     {
-        $query = array(
+        $query = [
             self::FOLDER_OWNER => $this->_params['user'],
             self::FOLDER_PATH => $this->_convertPath($path . '/' . $name),
-            self::FOLDER_TS => new MongoDate()
-        );
+            self::FOLDER_TS => new MongoDate(),
+        ];
 
         try {
             $this->_folders->insert($query);
-        } catch (MongoException $e) {}
+        } catch (MongoException $e) {
+        }
     }
 
     /**
@@ -282,9 +284,9 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
             return true;
         }
 
-        $query = array(
-            self::FOLDER_PATH => $path
-        );
+        $query = [
+            self::FOLDER_PATH => $path,
+        ];
 
         try {
             return (bool) $this->_folders->find($query)->limit(1)->count();
@@ -302,11 +304,11 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
         if ($recursive) {
             $this->emptyFolder($fullpath);
         } else {
-            $query = array(
-                $this->_mdKey(self::PATH) => array(
-                    '$regex' => '^' . $this->_convertPath($fullpath)
-                )
-            );
+            $query = [
+                $this->_mdKey(self::PATH) => [
+                    '$regex' => '^' . $this->_convertPath($fullpath),
+                ],
+            ];
 
             if ($this->_files->find($query)->limit(1)->count()) {
                 throw new Horde_Vfs_Exception(sprintf('Unable to delete %s/%s; the directory is not empty.', $path, $name));
@@ -314,9 +316,9 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
         }
 
         try {
-            $this->_folders->remove(array(
-                self::FOLDER_PATH => $this->_convertPath($fullpath)
-            ));
+            $this->_folders->remove([
+                self::FOLDER_PATH => $this->_convertPath($fullpath),
+            ]);
         } catch (MongoException $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -326,36 +328,36 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      */
     public function emptyFolder($path)
     {
-        $query = array(
-            $this->_mdKey(self::PATH) => array(
-                '$regex' => '^' . $this->_convertPath($path)
-            )
-        );
+        $query = [
+            $this->_mdKey(self::PATH) => [
+                '$regex' => '^' . $this->_convertPath($path),
+            ],
+        ];
         $size = null;
 
         try {
             if (!is_null($this->_vfsSize)) {
                 $files = $this->_files->find($query);
-                $ids = array();
+                $ids = [];
 
                 foreach ($files as $val) {
                     $ids[] = $val->file['_id'];
                     $size += $val->getSize();
                 }
 
-                $query = array(
-                    '_id' => array(
-                        '$in' => $ids
-                    )
-                );
+                $query = [
+                    '_id' => [
+                        '$in' => $ids,
+                    ],
+                ];
             }
 
             $this->_files->remove($query);
-            $this->_folders->remove(array(
-                self::FOLDER_PATH => array(
-                    '$regex' => '^' . $this->_convertPath($path) . '/'
-                )
-            ));
+            $this->_folders->remove([
+                self::FOLDER_PATH => [
+                    '$regex' => '^' . $this->_convertPath($path) . '/',
+                ],
+            ]);
         } catch (MongoException $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -376,21 +378,24 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
         if (!$this->_isFolder($path)) {
             throw new Horde_Vfs_Exception(sprintf('Folder "%s" does not exist', $path));
         }
 
-        $out = array();
+        $out = [];
         $path = $this->_convertPath($path);
 
         if (!$dironly) {
             try {
-                $files = $this->_files->find(array(
-                    $this->_mdKey(self::PATH) => $this->_convertPath($path)
-                ));
+                $files = $this->_files->find([
+                    $this->_mdKey(self::PATH) => $this->_convertPath($path),
+                ]);
             } catch (MongoException $e) {
                 throw new Horde_Vfs_Exception($e);
             }
@@ -408,14 +413,14 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
                     continue;
                 }
 
-                $tmp = array(
+                $tmp = [
                     'date' => $val->file['uploadDate']->sec,
                     'group' => '',
                     'name' => $name,
                     'owner' => $val->file[self::MD][self::OWNER],
                     'perms' => '',
-                    'size' => $val->getSize()
-                );
+                    'size' => $val->getSize(),
+                ];
 
                 $type = explode('.', $name);
                 $tmp['type'] = (count($type) == 1)
@@ -427,11 +432,11 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
         }
 
         try {
-            $folders = $this->_folders->find(array(
-                self::FOLDER_PATH => array(
-                    '$regex' => '^' . (strlen($path) ? $path . '/' : '') . '[^\/]+$'
-                )
-            ));
+            $folders = $this->_folders->find([
+                self::FOLDER_PATH => [
+                    '$regex' => '^' . (strlen($path) ? $path . '/' : '') . '[^\/]+$',
+                ],
+            ]);
         } catch (MongoException $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -440,20 +445,20 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
             $tmp = explode('/', $val[self::FOLDER_PATH]);
             $path = array_pop($tmp);
 
-            if (isset($out[$path]) ||
-                $this->_filterMatch($filter, $path)) {
+            if (isset($out[$path])
+                || $this->_filterMatch($filter, $path)) {
                 continue;
             }
 
-            $out[$path] = array(
+            $out[$path] = [
                 'date' => $val[self::FOLDER_TS]->sec,
                 'group' => '',
                 'name' => $path,
                 'owner' => $val[self::FOLDER_OWNER],
                 'perms' => '',
                 'size' => -1,
-                'type' => '**dir'
-            );
+                'type' => '**dir',
+            ];
         }
 
         return $out;
@@ -463,14 +468,14 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      */
     public function gc($path, $secs = 345600)
     {
-        $query = array(
-            $this->_mdKey(self::PATH) => array(
-                '$regex' => '^' . $this->_convertPath($path)
-            ),
-            'uploadDate' => array(
-                '$lt' => new MongoDate(time() - $secs)
-            )
-        );
+        $query = [
+            $this->_mdKey(self::PATH) => [
+                '$regex' => '^' . $this->_convertPath($path),
+            ],
+            'uploadDate' => [
+                '$lt' => new MongoDate(time() - $secs),
+            ],
+        ];
 
         try {
             $this->_files->remove($query);
@@ -499,10 +504,10 @@ class Horde_Vfs_Mongo extends Horde_Vfs_Base
      */
     protected function _getFile($path, $name)
     {
-        $query = array(
+        $query = [
             $this->_mdKey(self::FNAME) => $name,
-            $this->_mdKey(self::PATH) => $this->_convertPath($path)
-        );
+            $this->_mdKey(self::PATH) => $this->_convertPath($path),
+        ];
 
         try {
             return $this->_files->findOne($query);

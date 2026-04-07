@@ -20,6 +20,9 @@ use Horde_Vfs_Sql;
 use PEAR_Config;
 use PHPUnit\Framework\Attributes\Depends;
 
+/**
+ * @coversNothing
+ */
 class BaseTestCase extends TestBase
 {
     protected static $db;
@@ -160,12 +163,12 @@ class BaseTestCase extends TestBase
         self::$migrator = new Horde_Db_Migration_Migrator(
             self::$db,
             null,//$logger,
-            array('migrationsPath' => $dir,
-                  'schemaTableName' => 'horde_vfs_schema_info')
+            ['migrationsPath' => $dir,
+                'schemaTableName' => 'horde_vfs_schema_info']
         );
         self::$migrator->up();
 
-        self::$vfs = new Horde_Vfs_Sql(array('db' => self::$db));
+        self::$vfs = new Horde_Vfs_Sql(['db' => self::$db]);
     }
 
     public static function tearDownAfterClass(): void

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Codebase copyright 2002 Paul Gareau <paul@xhawk.net>.  Adapted with
  * permission by Patrice Levesque <wayne@ptaff.ca> from phpsmb-0.8 code, and
@@ -49,7 +50,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_credentials = array('username', 'password');
+    protected $_credentials = ['username', 'password'];
 
     /**
      * Prefix to use for every path.
@@ -72,7 +73,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      *
      * @param array $params  A hash containing connection parameters.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         parent::__construct($params);
         if (!isset($this->_params['share'])) {
@@ -139,8 +140,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
 
         $this->_createRoot();
 
-        list($npath, $name) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = array('get \"' . $name . '\" ' . $localFile);
+        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        $cmd = ['get \"' . $name . '\" ' . $localFile];
         $this->_command($npath, $cmd);
         if (!file_exists($localFile)) {
             throw new Horde_Vfs_Exception(sprintf('Unable to open VFS file "%s".', $this->_getPath($path, $name)));
@@ -161,8 +162,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      */
     public function readStream($path, $name)
     {
-        return fopen($this->readFile($path, $name),
-                     substr(PHP_OS, 0, 3) == 'WIN' ? 'rb' : 'r');
+        return fopen(
+            $this->readFile($path, $name),
+            substr(PHP_OS, 0, 3) == 'WIN' ? 'rb' : 'r'
+        );
     }
 
     /**
@@ -183,8 +186,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         // Double quotes not allowed in SMB filename.
         $name = str_replace('"', "'", $name);
 
-        list($npath, $name) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = array('put \"' . $tmpFile . '\" \"' . $name . '\"');
+        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        $cmd = ['put \"' . $tmpFile . '\" \"' . $name . '\"'];
         // do we need to first autocreate the directory?
         if ($autocreate) {
             $this->autocreatePath($path);
@@ -232,8 +235,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     {
         $this->_createRoot();
 
-        list($path, $name) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = array('del \"' . $name . '\"');
+        [$path, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        $cmd = ['del \"' . $name . '\"'];
         $this->_command($path, $cmd);
     }
 
@@ -249,9 +252,9 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     {
         $this->_createRoot();
 
-        list($path, $name) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        [$path, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
         try {
-            $this->_command($this->_getPath($path, $name), array('quit'));
+            $this->_command($this->_getPath($path, $name), ['quit']);
             return true;
         } catch (Horde_Vfs_Exception $e) {
             return false;
@@ -290,8 +293,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         }
 
         // Really delete the folder.
-        list($npath, $name) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = array('rmdir \"' . $name . '\"');
+        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        $cmd = ['rmdir \"' . $name . '\"'];
 
         try {
             $this->_command($npath, $cmd);
@@ -333,14 +336,14 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
             $newpath .= '/';
         }
 
-        list($file, $name) = $this->_escapeShellCommand($oldname, $newname);
-        $cmd = array(
+        [$file, $name] = $this->_escapeShellCommand($oldname, $newname);
+        $cmd = [
             'rename \"'
-            .  str_replace('/', '\\\\', $this->_getNativePath($oldpath))
+            . str_replace('/', '\\\\', $this->_getNativePath($oldpath))
             . $file . '\" \"'
             . str_replace('/', '\\\\', $this->_getNativePath($newpath))
-            . $name . '\"'
-        );
+            . $name . '\"',
+        ];
 
         try {
             $this->_command('', $cmd);
@@ -364,8 +367,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         // Double quotes not allowed in SMB filename.
         $name = str_replace('"', "'", $name);
 
-        list($dir, $mkdir) = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = array('mkdir \"' . $mkdir . '\"');
+        [$dir, $mkdir] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
+        $cmd = ['mkdir \"' . $mkdir . '\"'];
 
         try {
             $this->_command($dir, $cmd);
@@ -387,15 +390,21 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    public function listFolder($path = '', $filter = null, $dotfiles = true,
-                               $dironly = false, $recursive = false)
-    {
+    public function listFolder(
+        $path = '',
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false,
+        $recursive = false
+    ) {
         $this->_createRoot();
-        list($path) = $this->_escapeShellCommand($this->_getNativePath($path));
-        return $this->parseListing($this->_command($path, array('ls')),
-                                   $filter,
-                                   $dotfiles,
-                                   $dironly);
+        [$path] = $this->_escapeShellCommand($this->_getNativePath($path));
+        return $this->parseListing(
+            $this->_command($path, ['ls']),
+            $filter,
+            $dotfiles,
+            $dironly
+        );
     }
 
     /**
@@ -403,7 +412,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     public function parseListing($res, $filter, $dotfiles, $dironly)
     {
         $num_lines = count($res);
-        $files = array();
+        $files = [];
         for ($r = 0; $r < $num_lines; $r++) {
             // Match file listing.
             // One or multiple whitespace
@@ -438,13 +447,13 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
                 $my_type = Horde_String::lower($ext_name[count($ext_name) - 1]);
             }
             $my_date = strtotime($match[4]);
-            $filedata = array('owner' => '',
-                              'group' => '',
-                              'perms' => '',
-                              'name' => $my_name,
-                              'type' => $my_type,
-                              'date' => $my_date,
-                              'size' => $my_size);
+            $filedata = ['owner' => '',
+                'group' => '',
+                'perms' => '',
+                'name' => $my_name,
+                'type' => $my_type,
+                'date' => $my_date,
+                'size' => $my_size];
             // watch for filters and dironly
             if ($this->_filterMatch($filter, $my_name)) {
                 unset($file);
@@ -539,12 +548,12 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      */
     protected function _getNativePath($path)
     {
-        $parts = array($path);
+        $parts = [$path];
         if (strlen($this->_prefix)) {
             array_unshift($parts, $this->_prefix);
         }
-        if (isset($this->_params['vfsroot']) &&
-            strlen($this->_params['vfsroot'])) {
+        if (isset($this->_params['vfsroot'])
+            && strlen($this->_params['vfsroot'])) {
             array_unshift($parts, $this->_params['vfsroot']);
         }
         $path = implode('/', $parts);
@@ -568,10 +577,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      */
     protected function _escapeShellCommand()
     {
-        $ret = array();
+        $ret = [];
         $args = func_get_args();
         foreach ($args as $arg) {
-            $ret[] = str_replace(array(';', '\\'), array('\;', '\\\\'), $arg);
+            $ret[] = str_replace([';', '\\'], ['\;', '\\\\'], $arg);
         }
         return $ret;
     }
@@ -589,8 +598,9 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         $cmd = str_replace('"-U%"', '-N', $cmd);
         $proc = proc_open(
             $cmd,
-            array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')),
-            $pipes);
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes
+        );
         if (!is_resource($proc)) {
             // This should never happen.
             throw new Horde_Vfs_Exception('Failed to call proc_open().');
@@ -609,8 +619,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
                     $err = 'Command syntax incorrect';
                     break;
                 }
-                if (strpos($line, 'ERRSRV') !== false ||
-                    strpos($line, 'ERRDOS') !== false) {
+                if (strpos($line, 'ERRSRV') !== false
+                    || strpos($line, 'ERRDOS') !== false) {
                     $err = preg_replace('/.*\((.+)\).*/', '\\1', $line);
                     if (!$err) {
                         $err = $line;
@@ -628,8 +638,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         // Check for errors even on success.
         $err = '';
         foreach ($out as $line) {
-            if (strpos($line, 'NT_STATUS_NO_SUCH_FILE') !== false ||
-                strpos($line, 'NT_STATUS_OBJECT_NAME_NOT_FOUND') !== false) {
+            if (strpos($line, 'NT_STATUS_NO_SUCH_FILE') !== false
+                || strpos($line, 'NT_STATUS_OBJECT_NAME_NOT_FOUND') !== false) {
                 $err = Horde_Vfs_Translation::t("No such file");
                 break;
             } elseif (strpos($line, 'NT_STATUS_ACCESS_DENIED') !== false) {
@@ -657,7 +667,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      */
     protected function _command($path, $cmd)
     {
-        list($share) = $this->_escapeShellCommand($this->_params['share']);
+        [$share] = $this->_escapeShellCommand($this->_params['share']);
 
         putenv('PASSWD=' . $this->_params['password']);
         $port = isset($this->_params['port'])
@@ -669,14 +679,14 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         $domain = isset($this->_params['domain'])
             ? (' -W ' . $this->_params['domain'])
             : '';
-        $fullcmd = $this->_params['smbclient'] .
-            ' "//' . $this->_params['hostspec'] . '/' . $share . '"' .
-            $port .
-            ' "-U' . $this->_params['username'] . '"' .
-            ' -D "' . $path . '"' .
-            $ipoption .
-            $domain .
-            ' -c "';
+        $fullcmd = $this->_params['smbclient']
+            . ' "//' . $this->_params['hostspec'] . '/' . $share . '"'
+            . $port
+            . ' "-U' . $this->_params['username'] . '"'
+            . ' -D "' . $path . '"'
+            . $ipoption
+            . $domain
+            . ' -c "';
         foreach ($cmd as $c) {
             $fullcmd .= $c . ";";
         }
@@ -693,7 +703,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     protected function _connect()
     {
         try {
-            $this->_command('', array('quit'));
+            $this->_command('', ['quit']);
         } catch (Horde_Vfs_Exception $e) {
             throw new Horde_Vfs_Exception('Authentication to the SMB server failed.');
         }
@@ -712,10 +722,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         $path = '';
         foreach (explode('/', $root) as $dir) {
             try {
-                $this->_command($path . '/' . $dir . '/', array());
+                $this->_command($path . '/' . $dir . '/', []);
             } catch (Horde_Vfs_Exception $e) {
                 try {
-                    $this->_command('/' . $path . '/', array('mkdir \"' . $dir . '\"'));
+                    $this->_command('/' . $path . '/', ['mkdir \"' . $dir . '\"']);
                 } catch (Horde_Vfs_Exception $e) {
                     echo $e;
                     throw new Horde_Vfs_Exception(sprintf('Unable to create VFS root directory "%s".', $this->_params['vfsroot']));

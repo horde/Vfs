@@ -21,6 +21,9 @@ use Horde_Vfs;
 use Horde_Vfs_Exception;
 use PHPUnit\Framework\Attributes\Depends;
 
+/**
+ * @coversNothing
+ */
 class FtpTest extends TestBase
 {
     public function testListEmpty(): void

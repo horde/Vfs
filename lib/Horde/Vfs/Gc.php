@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Class for providing garbage collection for any VFS instance.
  *
- * Copyright 2003-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2003-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -28,7 +29,7 @@ class Horde_Vfs_Gc
         }
 
         /* Use a backend-specific method if one exists. */
-        if (is_callable(array($vfs, 'gc'))) {
+        if (is_callable([$vfs, 'gc'])) {
             $vfs->gc($path, $secs);
         }
 

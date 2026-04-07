@@ -1,4 +1,5 @@
 <?php
+
 /**
  * VFS implementation for an SSH2 server.
  * This module requires the SSH2 (version 0.10+) PECL package.
@@ -12,7 +13,7 @@
  * port - (integer) The port used to connect to the ssh2 server if other than
  *        22.</pre>
  *
- * Copyright 2006-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2006-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -27,30 +28,30 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_credentials = array('username', 'password');
+    protected $_credentials = ['username', 'password'];
 
     /**
      * List of permissions and if they can be changed in this VFS backend.
      *
      * @var array
      */
-    protected $_permissions = array(
-        'owner' => array(
+    protected $_permissions = [
+        'owner' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'group' => array(
+            'execute' => true,
+        ],
+        'group' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'all' => array(
+            'execute' => true,
+        ],
+        'all' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        )
-    );
+            'execute' => true,
+        ],
+    ];
 
     /**
      * Variable holding the connection to the ssh2 server.
@@ -78,14 +79,14 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_uids = array();
+    protected $_uids = [];
 
     /**
      * Local cache array for group IDs.
      *
      * @var array
      */
-    protected $_gids = array();
+    protected $_gids = [];
 
     /**
      * Returns the size of a file.
@@ -260,7 +261,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         /* See if we can stat the remote filename. ANDed with 040000 is true
          * if it is a directory. */
         $statinfo = @ssh2_sftp_stat($this->_sftp, $this->_getPath($path, $name));
-        return ($statinfo !== false) && ($statinfo['mode'] & 040000 === 040000);
+        return ($statinfo !== false) && ($statinfo['mode'] & 0o40000 === 0o40000);
     }
 
     /**
@@ -374,12 +375,15 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path = '', $filter = null,
-                                   $dotfiles = true, $dironly = false)
-    {
+    protected function _listFolder(
+        $path = '',
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
         $this->_connect();
 
-        $files = array();
+        $files = [];
 
         /* If 'maplocalids' is set, check for the POSIX extension. */
         $mapids = (!empty($this->_params['maplocalids']) && extension_loaded('posix'));
@@ -415,7 +419,8 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
                 $this->_stream,
                 'ls -' . $ls_args . ' ' . escapeshellarg($path),
                 null,
-                array('LC_TIME' => 'C'));
+                ['LC_TIME' => 'C']
+            );
         } else {
             $stream = @ssh2_exec($this->_stream, '');
         }
@@ -443,17 +448,17 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
             if (isset($olddir)) {
                 $this->_setPath($olddir);
             }
-            return array();
+            return [];
         }
 
         $currtime = time();
 
         foreach ($list as $line) {
-            $file = array();
+            $file = [];
             $item = preg_split('/\s+/', $line);
-            if (($type == 'unix') ||
-                (($type == 'win') &&
-                 !preg_match('|\d\d-\d\d-\d\d|', $item[0]))) {
+            if (($type == 'unix')
+                || (($type == 'win')
+                 && !preg_match('|\d\d-\d\d-\d\d|', $item[0]))) {
                 if ((count($item) < 8) || (substr($line, 0, 5) == 'total')) {
                     continue;
                 }
@@ -503,8 +508,8 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
                     } else {
                         $parts = explode('/', $file['link']);
                         $name = explode('.', array_pop($parts));
-                        if ((count($name) == 1) ||
-                            (($name[0] === '') && (count($name) == 2))) {
+                        if ((count($name) == 1)
+                            || (($name[0] === '') && (count($name) == 2))) {
                             $file['linktype'] = '**none';
                         } else {
                             $file['linktype'] = Horde_String::lower(array_pop($name));
@@ -514,9 +519,9 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
                     $file['type'] = '**dir';
                 } else {
                     $name = explode('.', $file['name']);
-                    if ((count($name) == 1) ||
-                        ((substr($file['name'], 0, 1) === '.') &&
-                         (count($name) == 2))) {
+                    if ((count($name) == 1)
+                        || ((substr($file['name'], 0, 1) === '.')
+                         && (count($name) == 2))) {
                         $file['type'] = '**none';
                     } else {
                         $file['type'] = Horde_String::lower($name[count($name) - 1]);
@@ -542,7 +547,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
                     $file['date'] = strtotime('00:00:00' . $item[5 + $addcol] . ' ' . $item[6 + $addcol] . ' ' . $item[7 + $addcol]);
                 }
             } elseif ($type == 'netware') {
-                $file = array();
+                $file = [];
                 $file['perms'] = $item[1];
                 $file['owner'] = $item[2];
                 if ($item[0] == 'd') {
@@ -572,9 +577,9 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
                 } else {
                     $file['size'] = $item[2];
                     $name = explode('.', $file['name']);
-                    if ((count($name) == 1) ||
-                        ((substr($file['name'], 0, 1) === '.') &&
-                         (count($name) == 2))) {
+                    if ((count($name) == 1)
+                        || ((substr($file['name'], 0, 1) === '.')
+                         && (count($name) == 2))) {
                         $file['type'] = '**none';
                     } else {
                         $file['type'] = Horde_String::lower($name[count($name) - 1]);
@@ -744,8 +749,8 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      */
     protected function _getPath($path, $name)
     {
-        if (isset($this->_params['vfsroot']) &&
-            strlen($this->_params['vfsroot'])) {
+        if (isset($this->_params['vfsroot'])
+            && strlen($this->_params['vfsroot'])) {
             if (strlen($path)) {
                 $path = $this->_params['vfsroot'] . '/' . $path;
             } else {
@@ -790,7 +795,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
             throw new Horde_Vfs_Exception('No configuration information specified for SSH2 VFS.');
         }
 
-        $required = array('hostspec', 'username', 'password');
+        $required = ['hostspec', 'username', 'password'];
         foreach ($required as $val) {
             if (!isset($this->_params[$val])) {
                 throw new Horde_Vfs_Exception(sprintf('Required "%s" not specified in VFS configuration.', $val));
@@ -817,9 +822,9 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         /* Create sftp resource. */
         $this->_sftp = @ssh2_sftp($this->_stream);
 
-        if (!empty($this->_params['vfsroot']) &&
-            !@ssh2_sftp_stat($this->_sftp, $this->_params['vfsroot']) &&
-            !@ssh2_sftp_mkdir($this->_sftp, $this->_params['vfsroot'])) {
+        if (!empty($this->_params['vfsroot'])
+            && !@ssh2_sftp_stat($this->_sftp, $this->_params['vfsroot'])
+            && !@ssh2_sftp_mkdir($this->_sftp, $this->_params['vfsroot'])) {
             throw new Horde_Vfs_Exception(sprintf('Unable to create VFS root directory "%s".', $this->_params['vfsroot']));
         }
     }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * VFS API for abstracted file storage and access.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -17,7 +18,7 @@ abstract class Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * List of additional credentials required for this VFS backend (example:
@@ -25,39 +26,39 @@ abstract class Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_credentials = array();
+    protected $_credentials = [];
 
     /**
      * List of permissions and if they can be changed in this VFS backend.
      *
      * @var array
      */
-    protected $_permissions = array(
-        'owner' => array(
+    protected $_permissions = [
+        'owner' => [
             'read' => false,
             'write' => false,
-            'execute' => false
-        ),
-        'group' => array(
+            'execute' => false,
+        ],
+        'group' => [
             'read' => false,
             'write' => false,
-            'execute' => false
-        ),
-        'all' => array(
+            'execute' => false,
+        ],
+        'all' => [
             'read' => false,
             'write' => false,
-            'execute' => false
-        )
-    );
+            'execute' => false,
+        ],
+    ];
 
     /**
      * List of features that the VFS driver supports.
      *
      * @var array
      */
-    protected $_features = array(
+    protected $_features = [
         'readByteRange' => false,
-    );
+    ];
 
     /**
      * The current size, in bytes, of the VFS tree.
@@ -71,13 +72,13 @@ abstract class Horde_Vfs_Base
      *
      * @param array $params  A hash containing connection parameters.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
-        $this->setParams(array(
+        $this->setParams([
             'user' => '',
             'vfs_quotalimit' => -1,
-            'vfs_quotaroot' => ''
-        ));
+            'vfs_quotaroot' => '',
+        ]);
         $this->setParams((array) $params);
     }
 
@@ -110,9 +111,7 @@ abstract class Horde_Vfs_Base
      *
      * @throws Horde_Vfs_Exception
      */
-    protected function _connect()
-    {
-    }
+    protected function _connect() {}
 
     /**
      * Sets configuration parameters.
@@ -120,7 +119,7 @@ abstract class Horde_Vfs_Base
      * @param array $params  An associative array with parameter names as
      *                       keys.
      */
-    public function setParams($params = array())
+    public function setParams($params = [])
     {
         $this->_params = array_merge($this->_params, (array) $params);
     }
@@ -134,9 +133,8 @@ abstract class Horde_Vfs_Base
      */
     public function getParam($name)
     {
-        return isset($this->_params[$name])
-            ? $this->_params[$name]
-            : null;
+        return $this->_params[$name]
+            ?? null;
     }
 
     /**
@@ -215,7 +213,7 @@ abstract class Horde_Vfs_Base
             throw new Horde_Vfs_Exception('Unable to create temporary file.');
         }
 
-        if (is_callable(array($this, 'readStream'))) {
+        if (is_callable([$this, 'readStream'])) {
             // Use a stream from the VFS if possible, to avoid reading all data
             // into memory.
             $stream = $this->readStream($path, $name);
@@ -546,9 +544,13 @@ abstract class Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    public function listFolder($path, $filter = null, $dotfiles = true,
-                               $dironly = false, $recursive = false)
-    {
+    public function listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false,
+        $recursive = false
+    ) {
         $list = $this->_listFolder($path, $filter, $dotfiles, $dironly);
         if (!$recursive) {
             return $list;
@@ -580,9 +582,12 @@ abstract class Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
         throw new Horde_Vfs_Exception('Not supported.');
     }
 
@@ -680,17 +685,17 @@ abstract class Horde_Vfs_Base
     public function setQuota($quota, $metric = Horde_Vfs::QUOTA_METRIC_BYTE)
     {
         switch ($metric) {
-        case Horde_Vfs::QUOTA_METRIC_KB:
-            $quota *= pow(2, 10);
-            break;
+            case Horde_Vfs::QUOTA_METRIC_KB:
+                $quota *= pow(2, 10);
+                break;
 
-        case Horde_Vfs::QUOTA_METRIC_MB:
-            $quota *= pow(2, 20);
-            break;
+            case Horde_Vfs::QUOTA_METRIC_MB:
+                $quota *= pow(2, 20);
+                break;
 
-        case Horde_Vfs::QUOTA_METRIC_GB:
-            $quota *= pow(2, 30);
-            break;
+            case Horde_Vfs::QUOTA_METRIC_GB:
+                $quota *= pow(2, 30);
+                break;
         }
 
         $this->_params['vfs_quotalimit'] = $quota;
@@ -722,10 +727,10 @@ abstract class Horde_Vfs_Base
             throw new Horde_Vfs_Exception('No quota set.');
         }
 
-        return array(
+        return [
             'limit' => $this->_params['vfs_quotalimit'],
-            'usage' => $this->getVFSSize()
-        );
+            'usage' => $this->getVFSSize(),
+        ];
     }
 
     /**
@@ -742,8 +747,8 @@ abstract class Horde_Vfs_Base
      */
     protected function _checkQuotaWrite($mode, $data, $path = null, $name = null)
     {
-        if ($this->_params['vfs_quotalimit'] == -1 &&
-            is_null($this->_vfsSize)) {
+        if ($this->_params['vfs_quotalimit'] == -1
+            && is_null($this->_vfsSize)) {
             return;
         }
 
@@ -764,8 +769,8 @@ abstract class Horde_Vfs_Base
         }
 
         $vfssize = $this->getVFSSize();
-        if ($this->_params['vfs_quotalimit'] > -1 &&
-            ($vfssize + $filesize - $oldsize) > $this->_params['vfs_quotalimit']) {
+        if ($this->_params['vfs_quotalimit'] > -1
+            && ($vfssize + $filesize - $oldsize) > $this->_params['vfs_quotalimit']) {
             throw new Horde_Vfs_Exception('Unable to write VFS file, quota will be exceeded.');
         }
 

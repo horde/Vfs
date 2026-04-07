@@ -15,6 +15,9 @@ namespace Horde\Vfs\Test\Integration\Sql;
 use Horde\Vfs\Test\Integration\ConfigHelper;
 use Horde_Db_Adapter_Oci8;
 
+/**
+ * @coversNothing
+ */
 class Oci8Test extends BaseTestCase
 {
     public static function setUpBeforeClass(): void

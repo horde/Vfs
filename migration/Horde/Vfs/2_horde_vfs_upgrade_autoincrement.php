@@ -1,4 +1,5 @@
 <?php
+
 class HordeVfsUpgradeAutoIncrement extends Horde_Db_Migration_Base
 {
     public function up()
@@ -16,11 +17,13 @@ class HordeVfsUpgradeAutoIncrement extends Horde_Db_Migration_Base
     public function down()
     {
         try {
-            $this->changeColumn('horde_muvfs', 'vfs_id', 'integer', array('null' => false, 'unsigned' => true));
-        } catch (Horde_Db_Exception $e) {}
+            $this->changeColumn('horde_muvfs', 'vfs_id', 'integer', ['null' => false, 'unsigned' => true]);
+        } catch (Horde_Db_Exception $e) {
+        }
 
         try {
-            $this->changeColumn('horde_vfs', 'vfs_id', 'integer', array('null' => false, 'unsigned' => true));
-        } catch (Horde_Db_Exception $e) {}
+            $this->changeColumn('horde_vfs', 'vfs_id', 'integer', ['null' => false, 'unsigned' => true]);
+        } catch (Horde_Db_Exception $e) {
+        }
     }
 }

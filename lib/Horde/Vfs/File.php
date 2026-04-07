@@ -1,8 +1,9 @@
 <?php
+
 /**
  * VFS implementation for a filesystem.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -17,32 +18,32 @@ class Horde_Vfs_File extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_permissions = array(
-        'owner' => array(
+    protected $_permissions = [
+        'owner' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'group' => array(
+            'execute' => true,
+        ],
+        'group' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'all' => array(
+            'execute' => true,
+        ],
+        'all' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        )
-    );
+            'execute' => true,
+        ],
+    ];
 
     /**
      * List of features that the VFS driver supports.
      *
      * @var array
      */
-    protected $_features = array(
+    protected $_features = [
         'readByteRange' => true,
-    );
+    ];
 
     /**
      * Constructs a new Filesystem based VFS object.
@@ -53,13 +54,13 @@ class Horde_Vfs_File extends Horde_Vfs_Base
      *              Note: The user that your webserver runs as MUST have
      *              read/write permission to this directory.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         parent::__construct($params);
 
-        if (!empty($this->_params['vfsroot']) &&
-            ((substr($this->_params['vfsroot'], -1) == '/') ||
-             (substr($this->_params['vfsroot'], -1) == '\\'))) {
+        if (!empty($this->_params['vfsroot'])
+            && ((substr($this->_params['vfsroot'], -1) == '/')
+             || (substr($this->_params['vfsroot'], -1) == '\\'))) {
             $this->_params['vfsroot'] = substr($this->_params['vfsroot'], 0, strlen($this->_params['vfsroot']) - 1);
             if (!strlen($this->_params['vfsroot'])) {
                 $this->_params['vfsroot'] = '/';
@@ -169,7 +170,7 @@ class Horde_Vfs_File extends Horde_Vfs_Base
         // Calculate how many bytes MUST be read, so the remainging
         // bytes and the new offset can be calculated correctly.
         $file = $this->_getNativePath($path, $name);
-        $size = filesize ($file);
+        $size = filesize($file);
         if (($length == -1) || (($length + $offset) > $size)) {
             $length = $size - $offset;
         }
@@ -427,11 +428,14 @@ class Horde_Vfs_File extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
-        $path = $path ?? '';
-        $files = array();
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
+        $path ??= '';
+        $files = [];
         $dir = $this->_getNativePath(strlen($path) ? $path : '');
 
         if (!@is_dir($dir)) {
@@ -558,15 +562,15 @@ class Horde_Vfs_File extends Horde_Vfs_Base
     protected function _getUnixPerms($perms)
     {
         // Determine permissions
-        $owner['read']    = ($perms & 00400) ? 'r' : '-';
-        $owner['write']   = ($perms & 00200) ? 'w' : '-';
-        $owner['execute'] = ($perms & 00100) ? 'x' : '-';
-        $group['read']    = ($perms & 00040) ? 'r' : '-';
-        $group['write']   = ($perms & 00020) ? 'w' : '-';
-        $group['execute'] = ($perms & 00010) ? 'x' : '-';
-        $world['read']    = ($perms & 00004) ? 'r' : '-';
-        $world['write']   = ($perms & 00002) ? 'w' : '-';
-        $world['execute'] = ($perms & 00001) ? 'x' : '-';
+        $owner['read']    = ($perms & 0o0400) ? 'r' : '-';
+        $owner['write']   = ($perms & 0o0200) ? 'w' : '-';
+        $owner['execute'] = ($perms & 0o0100) ? 'x' : '-';
+        $group['read']    = ($perms & 0o0040) ? 'r' : '-';
+        $group['write']   = ($perms & 0o0020) ? 'w' : '-';
+        $group['execute'] = ($perms & 0o0010) ? 'x' : '-';
+        $world['read']    = ($perms & 0o0004) ? 'r' : '-';
+        $world['write']   = ($perms & 0o0002) ? 'w' : '-';
+        $world['execute'] = ($perms & 0o0001) ? 'x' : '-';
 
         // Adjust for SUID, SGID and sticky bit
         if ($perms & 0x800) {
@@ -579,9 +583,9 @@ class Horde_Vfs_File extends Horde_Vfs_Base
             $world['execute'] = ($world['execute'] == 'x') ? 't' : 'T';
         }
 
-        return $owner['read'] . $owner['write'] . $owner['execute'] .
-               $group['read'] . $group['write'] . $group['execute'] .
-               $world['read'] . $world['write'] . $world['execute'];
+        return $owner['read'] . $owner['write'] . $owner['execute']
+               . $group['read'] . $group['write'] . $group['execute']
+               . $world['read'] . $world['write'] . $world['execute'];
     }
 
     /**
@@ -600,8 +604,10 @@ class Horde_Vfs_File extends Horde_Vfs_Base
             $this->autocreatePath($newpath);
         }
 
-        if (!@rename($this->_getNativePath($oldpath, $oldname),
-                     $this->_getNativePath($newpath, $newname))) {
+        if (!@rename(
+            $this->_getNativePath($oldpath, $oldname),
+            $this->_getNativePath($newpath, $newname)
+        )) {
             $this->_throwException(new Horde_Vfs_Exception(sprintf('Unable to rename VFS file %s/%s.', $oldpath, $oldname)));
         }
     }
@@ -641,8 +647,8 @@ class Horde_Vfs_File extends Horde_Vfs_Base
         }
 
         if (strlen($path)) {
-            if (isset($this->_params['home']) &&
-                preg_match('|^~/?(.*)$|', $path, $matches)) {
+            if (isset($this->_params['home'])
+                && preg_match('|^~/?(.*)$|', $path, $matches)) {
                 $path = $this->_params['home'] . '/' . $matches[1];
             }
 

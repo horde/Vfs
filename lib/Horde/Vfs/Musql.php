@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Multi User VFS implementation for Horde's database abstraction layer.
  *
@@ -18,7 +19,7 @@
  * The table structure for the VFS can be created with the horde-db-migrate
  * script from the Horde_Db package.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -30,33 +31,33 @@
 class Horde_Vfs_Musql extends Horde_Vfs_Sql
 {
     /* Permission for read access. */
-    const FLAG_READ = 1;
+    public const FLAG_READ = 1;
 
     /* Permission for read access. */
-    const FLAG_WRITE = 2;
+    public const FLAG_WRITE = 2;
 
     /**
      * List of permissions and if they can be changed in this VFS
      *
      * @var array
      */
-    protected $_permissions = array(
-        'owner' => array(
+    protected $_permissions = [
+        'owner' => [
             'read' => false,
             'write' => false,
-            'execute' => false
-        ),
-        'group' => array(
+            'execute' => false,
+        ],
+        'group' => [
             'read' => false,
             'write' => false,
-            'execute' => false
-        ),
-        'all' => array(
+            'execute' => false,
+        ],
+        'all' => [
             'read' => true,
             'write' => true,
-            'execute' => false
-        )
-    );
+            'execute' => false,
+        ],
+    ];
 
     /**
      * Stores a file in the VFS from raw data.
@@ -86,11 +87,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
             $previous = '';
 
             foreach ($paths as $thispath) {
-                $sql = sprintf('SELECT vfs_owner, vfs_perms FROM %s
+                $sql = sprintf(
+                    'SELECT vfs_owner, vfs_perms FROM %s
                                 WHERE vfs_path = ? AND vfs_name= ?',
-                               $this->_params['table']);
+                    $this->_params['table']
+                );
                 try {
-                    $results = $this->_db->select($sql, array($previous, $thispath));
+                    $results = $this->_db->select($sql, [$previous, $thispath]);
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }
@@ -100,8 +103,8 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
 
                 $allowed = false;
                 foreach ($results as $result) {
-                    if ($result['vfs_owner'] == $this->_params['user'] ||
-                        $result['vfs_perm'] & self::FLAG_WRITE) {
+                    if ($result['vfs_owner'] == $this->_params['user']
+                        || $result['vfs_perm'] & self::FLAG_WRITE) {
                         $allowed = true;
                         break;
                     }
@@ -128,11 +131,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
      */
     public function deleteFile($path, $name)
     {
-        $sql = sprintf('SELECT vfs_id, vfs_owner, vfs_perms FROM %s
+        $sql = sprintf(
+            'SELECT vfs_id, vfs_owner, vfs_perms FROM %s
                         WHERE vfs_path = ? AND vfs_name= ? AND vfs_type = ?',
-                       $this->_params['table']);
+            $this->_params['table']
+        );
         try {
-            $fileList = $this->_db->select($sql, array($path, $name, self::FILE));
+            $fileList = $this->_db->select($sql, [$path, $name, self::FILE]);
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -144,12 +149,14 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
          * not have read access to them, so doesn't see them. So we have to
          * delete the one they have access to. */
         foreach ($fileList as $file) {
-            if ($file['vfs_owner'] == $this->_params['user'] ||
-                $file['vfs_perms'] & self::FLAG_WRITE) {
-                $sql = sprintf('DELETE FROM %s WHERE vfs_id = ?',
-                               $this->_params['table']);
+            if ($file['vfs_owner'] == $this->_params['user']
+                || $file['vfs_perms'] & self::FLAG_WRITE) {
+                $sql = sprintf(
+                    'DELETE FROM %s WHERE vfs_id = ?',
+                    $this->_params['table']
+                );
                 try {
-                    $result = $this->_db->delete($sql, array($file['vfs_id']));
+                    $result = $this->_db->delete($sql, [$file['vfs_id']]);
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }
@@ -176,11 +183,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
      */
     public function rename($oldpath, $oldname, $newpath, $newname)
     {
-        $sql = sprintf('SELECT vfs_id, vfs_owner, vfs_perms FROM %s
+        $sql = sprintf(
+            'SELECT vfs_id, vfs_owner, vfs_perms FROM %s
                         WHERE vfs_path = ? AND vfs_name= ?',
-                       $this->_params['table']);
+            $this->_params['table']
+        );
         try {
-            $fileList = $this->_db->select($sql, array($oldpath, $oldname));
+            $fileList = $this->_db->select($sql, [$oldpath, $oldname]);
 
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
@@ -193,7 +202,7 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
             $parent = '';
             $path = $newpath;
         } else {
-            list($parent, $path) = explode('/', $newpath, 2);
+            [$parent, $path] = explode('/', $newpath, 2);
         }
         if (!$this->isFolder($parent, $path)) {
             $this->autocreatePath($newpath);
@@ -203,15 +212,18 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
          * not have read access to them, so doesn't see them. So we have to
          * rename the one they have access to. */
         foreach ($fileList as $file) {
-            if ($file['vfs_owner'] == $this->_params['user'] ||
-                $file['vfs_perms'] & self::FLAG_WRITE) {
-                $sql = sprintf('UPDATE %s SET vfs_path = ?, vfs_name = ?, vfs_modified = ?
+            if ($file['vfs_owner'] == $this->_params['user']
+                || $file['vfs_perms'] & self::FLAG_WRITE) {
+                $sql = sprintf(
+                    'UPDATE %s SET vfs_path = ?, vfs_name = ?, vfs_modified = ?
                                 WHERE vfs_id = ?',
-                               $this->_params['table']);
+                    $this->_params['table']
+                );
                 try {
                     $this->_db->update(
                         $sql,
-                        array($newpath, $newname, time(), $file['vfs_id']));
+                        [$newpath, $newname, time(), $file['vfs_id']]
+                    );
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }
@@ -237,11 +249,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
             $previous = '';
 
             foreach ($paths as $thispath) {
-                $sql = sprintf('SELECT vfs_owner, vfs_perms FROM %s
+                $sql = sprintf(
+                    'SELECT vfs_owner, vfs_perms FROM %s
                                 WHERE vfs_path = ? AND vfs_name= ?',
-                               $this->_params['table']);
+                    $this->_params['table']
+                );
                 try {
-                    $results = $this->_db->select($sql, array($previous, $thispath));
+                    $results = $this->_db->select($sql, [$previous, $thispath]);
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }
@@ -251,8 +265,8 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
 
                 $allowed = false;
                 foreach ($results as $result) {
-                    if ($result['vfs_owner'] == $this->_params['user'] ||
-                        $result['vfs_perms'] & self::FLAG_WRITE) {
+                    if ($result['vfs_owner'] == $this->_params['user']
+                        || $result['vfs_perms'] & self::FLAG_WRITE) {
                         $allowed = true;
                         break;
                     }
@@ -266,14 +280,17 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
             }
         }
 
-        $sql = sprintf('INSERT INTO %s
+        $sql = sprintf(
+            'INSERT INTO %s
                         (vfs_type, vfs_path, vfs_name, vfs_modified, vfs_owner, vfs_perms)
                         VALUES (?, ?, ?, ?, ?, ?)',
-                       $this->_params['table']);
+            $this->_params['table']
+        );
         try {
             $this->_db->insert(
                 $sql,
-                array(self::FOLDER, $path, $name, time(), $this->_params['user'], 0));
+                [self::FOLDER, $path, $name, time(), $this->_params['user'], 0]
+            );
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -299,11 +316,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
             }
         }
 
-        $sql = sprintf('SELECT vfs_id, vfs_owner, vfs_perms FROM %s
+        $sql = sprintf(
+            'SELECT vfs_id, vfs_owner, vfs_perms FROM %s
                         WHERE vfs_path = ? AND vfs_name= ? AND vfs_type = ?',
-                       $this->_params['table']);
+            $this->_params['table']
+        );
         try {
-            $fileList = $this->_db->select($sql, array($path, $name, self::FOLDER));
+            $fileList = $this->_db->select($sql, [$path, $name, self::FOLDER]);
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -315,12 +334,14 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
          * may not have read access to them, they don't see them. So we have
          * to delete the one they have access to */
         foreach ($fileList as $file) {
-            if ($file['vfs_owner'] == $this->_params['user'] ||
-                $file['vfs_perms'] & self::FLAG_WRITE) {
-                $sql = sprintf('DELETE FROM %s WHERE vfs_id = ?',
-                               $this->_params['table']);
+            if ($file['vfs_owner'] == $this->_params['user']
+                || $file['vfs_perms'] & self::FLAG_WRITE) {
+                $sql = sprintf(
+                    'DELETE FROM %s WHERE vfs_id = ?',
+                    $this->_params['table']
+                );
                 try {
-                    $result = $this->_db->delete($sql, array($file['vfs_id']));
+                    $result = $this->_db->delete($sql, [$file['vfs_id']]);
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }
@@ -347,22 +368,29 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path, $filter = null, $dotfiles = true,
-                                   $dironly = false)
-    {
+    protected function _listFolder(
+        $path,
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
         $length_op = $this->_getFileSizeOp();
-        $sql = sprintf('SELECT vfs_name, vfs_type, vfs_modified, vfs_owner, vfs_perms, %s(vfs_data) length FROM %s
+        $sql = sprintf(
+            'SELECT vfs_name, vfs_type, vfs_modified, vfs_owner, vfs_perms, %s(vfs_data) length FROM %s
                         WHERE vfs_path = ? AND (vfs_owner = ? OR vfs_perms \&\& ?)',
-                       $length_op, $this->_params['table']);
+            $length_op,
+            $this->_params['table']
+        );
         try {
             $fileList = $this->_db->select(
                 $sql,
-                array($path, $this->_params['user'], self::FLAG_READ));
+                [$path, $this->_params['user'], self::FLAG_READ]
+            );
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
 
-        $files = array();
+        $files = [];
         foreach ($fileList as $line) {
             // Filter out dotfiles if they aren't wanted.
             if (!$dotfiles && substr($line['vfs_name'], 0, 1) == '.') {
@@ -430,11 +458,13 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
         $perm |= ($val & 4) ? self::FLAG_READ : 0;
         $perm |= ($val & 2) ? self::FLAG_WRITE : 0;
 
-        $sql = sprintf('SELECT vfs_id, vfs_owner, vfs_perms FROM %s
+        $sql = sprintf(
+            'SELECT vfs_id, vfs_owner, vfs_perms FROM %s
                         WHERE vfs_path = ? AND vfs_name= ?',
-                       $this->_params['table']);
+            $this->_params['table']
+        );
         try {
-            $fileList = $this->_db->select($sql, array($path, $name));
+            $fileList = $this->_db->select($sql, [$path, $name]);
         } catch (Horde_Db_Exception $e) {
             throw new Horde_Vfs_Exception($e);
         }
@@ -446,13 +476,15 @@ class Horde_Vfs_Musql extends Horde_Vfs_Sql
          * not have read access to them, so doesn't see them. So we have to
          * chmod the one they have access to. */
         foreach ($fileList as $file) {
-            if ($file['vfs_owner'] == $this->_params['user'] ||
-                $file['vfs_perms'] & self::FLAG_WRITE) {
-                $sql = sprintf('UPDATE %s SET vfs_perms = ?
+            if ($file['vfs_owner'] == $this->_params['user']
+                || $file['vfs_perms'] & self::FLAG_WRITE) {
+                $sql = sprintf(
+                    'UPDATE %s SET vfs_perms = ?
                                 WHERE vfs_id = ?',
-                               $this->_params['table']);
+                    $this->_params['table']
+                );
                 try {
-                    $this->_db->update($sql, array($perm, $file['vfs_id']));
+                    $this->_db->update($sql, [$perm, $file['vfs_id']]);
                 } catch (Horde_Db_Exception $e) {
                     throw new Horde_Vfs_Exception($e);
                 }

@@ -21,6 +21,9 @@ use Horde_Vfs;
 use Horde_Vfs_Exception;
 use PHPUnit\Framework\Attributes\Depends;
 
+/**
+ * @coversNothing
+ */
 class SmbTest extends TestBase
 {
     private string $_oldTimezone = '';
@@ -196,7 +199,7 @@ class SmbTest extends TestBase
         $config['vfs']['smb']['share'] .= '/hostspectest';
         $vfs = Horde_Vfs::factory('Smb', $config['vfs']['smb']);
         $this->assertEquals(
-            array('subdir'),
+            ['subdir'],
             array_keys($vfs->listFolder('directory'))
         );
     }

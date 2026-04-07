@@ -1,4 +1,5 @@
 <?php
+
 /**
  * VFS implementation for an FTP server.
  *
@@ -25,8 +26,8 @@
  * - type: (string) The type of the remote FTP server. Possible values: 'unix',
  *         'win', 'netware' By default, we attempt to auto-detect type.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
- * Copyright 2002-2007 Michael Varghese <mike.varghese@ascellatech.com>
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Michael Varghese <mike.varghese@ascellatech.com>
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -42,37 +43,37 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_params = array('port' => 21);
+    protected $_params = ['port' => 21];
 
     /**
      * List of additional credentials required for this VFS backend.
      *
      * @var array
      */
-    protected $_credentials = array('username', 'password');
+    protected $_credentials = ['username', 'password'];
 
     /**
      * List of permissions and if they can be changed in this VFS backend.
      *
      * @var array
      */
-    protected $_permissions = array(
-        'owner' => array(
+    protected $_permissions = [
+        'owner' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'group' => array(
+            'execute' => true,
+        ],
+        'group' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        ),
-        'all' => array(
+            'execute' => true,
+        ],
+        'all' => [
             'read' => true,
             'write' => true,
-            'execute' => true
-        )
-    );
+            'execute' => true,
+        ],
+    ];
 
     /**
      * Variable holding the connection to the ftp server.
@@ -86,14 +87,14 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      *
      * @var array
      */
-    protected $_uids = array();
+    protected $_uids = [];
 
     /**
      * Local cache array for group IDs.
      *
      * @var array
      */
-    protected $_gids = array();
+    protected $_gids = [];
 
     /**
      * The FTP server type.
@@ -168,7 +169,8 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $this->_stream,
             $localFile,
             $this->_getPath($path, $name),
-            FTP_BINARY);
+            FTP_BINARY
+        );
 
         if ($result === false) {
             throw new Horde_Vfs_Exception(sprintf('Unable to open VFS file "%s".', $this->_getPath($path, $name)));
@@ -418,9 +420,12 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder($path = '', $filter = null,
-                                   $dotfiles = true, $dironly = false)
-    {
+    protected function _listFolder(
+        $path = '',
+        $filter = null,
+        $dotfiles = true,
+        $dironly = false
+    ) {
         $this->_connect();
 
         if (empty($this->_type)) {
@@ -465,21 +470,21 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             if (isset($olddir)) {
                 $this->_setPath($olddir);
             }
-            return array();
+            return [];
         }
 
         /* If 'maplocalids' is set, check for the POSIX extension. */
         $mapids = (!empty($this->_params['maplocalids']) && extension_loaded('posix'));
 
         $currtime = time();
-        $files = array();
+        $files = [];
 
         foreach ($list as $line) {
-            $file = array();
+            $file = [];
 
             $item = preg_split('/\s+/', $line);
-            if (($this->_type == 'unix') ||
-                (($this->_type == 'win') && !preg_match('|\d\d-\d\d-\d\d|', $item[0]))) {
+            if (($this->_type == 'unix')
+                || (($this->_type == 'win') && !preg_match('|\d\d-\d\d-\d\d|', $item[0]))) {
                 if (count($item) < 8 || substr($line, 0, 5) == 'total') {
                     continue;
                 }
@@ -501,8 +506,8 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
                     $file['group'] = $item[3];
                 }
 
-                if (!empty($this->_params['lsformat']) &&
-                    ($this->_params['lsformat'] == 'aix')) {
+                if (!empty($this->_params['lsformat'])
+                    && ($this->_params['lsformat'] == 'aix')) {
                     $file['name'] = substr($line, strpos($line, sprintf("%s %2s %-5s", $item[5], $item[6], $item[7])) + 13);
                 } else {
                     $file['name'] = substr($line, strpos($line, sprintf("%s %2s %5s", $item[5], $item[6], $item[7])) + 13);
@@ -569,7 +574,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
                     continue;
                 }
 
-                $file = array();
+                $file = [];
                 $file['perms'] = $item[1];
                 $file['owner'] = $item[2];
                 if ($item[0] == 'd') {
@@ -738,8 +743,8 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      */
     protected function _getPath($path, $name)
     {
-        if (isset($this->_params['vfsroot']) &&
-            strlen($this->_params['vfsroot'])) {
+        if (isset($this->_params['vfsroot'])
+            && strlen($this->_params['vfsroot'])) {
             if (strlen($path)) {
                 $path = $this->_params['vfsroot'] . '/' . $path;
             } else {
@@ -782,7 +787,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             throw new Horde_Vfs_Exception('No configuration information specified for FTP VFS.');
         }
 
-        $required = array('hostspec', 'username', 'password');
+        $required = ['hostspec', 'username', 'password'];
         foreach ($required as $val) {
             if (!isset($this->_params[$val])) {
                 throw new Horde_Vfs_Exception(sprintf('Required "%s" not specified in VFS configuration.', $val));
@@ -818,9 +823,9 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             ftp_set_option($this->_stream, FTP_TIMEOUT_SEC, $this->_params['timeout']);
         }
 
-        if (!empty($this->_params['vfsroot']) &&
-            !@ftp_chdir($this->_stream, $this->_params['vfsroot']) &&
-            !@ftp_mkdir($this->_stream, $this->_params['vfsroot'])) {
+        if (!empty($this->_params['vfsroot'])
+            && !@ftp_chdir($this->_stream, $this->_params['vfsroot'])
+            && !@ftp_mkdir($this->_stream, $this->_params['vfsroot'])) {
             throw new Horde_Vfs_Exception(sprintf('Unable to create VFS root directory "%s".', $this->_params['vfsroot']));
         }
     }

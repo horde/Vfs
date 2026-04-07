@@ -1,4 +1,5 @@
 <?php
+
 class HordeVfsFixBlobLength extends Horde_Db_Migration_Base
 {
     public function up()
@@ -7,7 +8,5 @@ class HordeVfsFixBlobLength extends Horde_Db_Migration_Base
         $this->changeColumn('horde_muvfs', 'vfs_data', 'binary');
     }
 
-    public function down()
-    {
-    }
+    public function down() {}
 }

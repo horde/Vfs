@@ -15,6 +15,9 @@ namespace Horde\Vfs\Test\Integration;
 use Horde_Vfs_Exception;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class TestBase extends TestCase
 {
     protected static $reason = '';
@@ -34,9 +37,9 @@ class TestBase extends TestCase
 
     protected function _listEmpty()
     {
-        $this->assertEquals(array(), self::$vfs->listFolder(''));
-        $this->assertEquals(array(), self::$vfs->listFolder('/'));
-        $this->assertEquals(array(), self::$vfs->listFolder(null));
+        $this->assertEquals([], self::$vfs->listFolder(''));
+        $this->assertEquals([], self::$vfs->listFolder('/'));
+        $this->assertEquals([], self::$vfs->listFolder(null));
     }
 
     /**
@@ -309,7 +312,7 @@ class TestBase extends TestCase
         self::$vfs->copy('test/dir1', 'file2', 'test/dir2');
         self::$vfs->createFolder('test/dir2', 'dir2_1');
         $this->assertEquals(
-            array('dir2_1', 'dir5', 'file1', 'file2'),
+            ['dir2_1', 'dir5', 'file1', 'file2'],
             array_keys($this->_sort(self::$vfs->listFolder('test/dir2')))
         );
         self::$vfs->emptyFolder('test/dir2');
@@ -317,7 +320,7 @@ class TestBase extends TestCase
         $this->assertFalse(self::$vfs->exists('test/dir2', 'file2'));
         $this->assertFalse(self::$vfs->exists('test/dir2', 'dir2_1'));
         $this->assertTrue(self::$vfs->exists('test', 'dir2'));
-        $this->assertEquals(array(), self::$vfs->listFolder('test/dir2'));
+        $this->assertEquals([], self::$vfs->listFolder('test/dir2'));
     }
 
     /**
@@ -341,7 +344,7 @@ class TestBase extends TestCase
         self::$vfs->writeData('', 'file1', '1234567890');
         $this->assertTrue(self::$vfs->exists('', 'file1'));
         $this->assertEquals(
-            array('limit' => $used + 10, 'usage' => $used + 10),
+            ['limit' => $used + 10, 'usage' => $used + 10],
             self::$vfs->getQuota()
         );
         try {
@@ -352,22 +355,22 @@ class TestBase extends TestCase
         self::$vfs->deleteFile('', 'file1');
         $this->assertFalse(self::$vfs->exists('', 'file1'));
         $this->assertEquals(
-            array('limit' => $used + 10, 'usage' => $used),
+            ['limit' => $used + 10, 'usage' => $used],
             self::$vfs->getQuota()
         );
         self::$vfs->writeData('', 'file2', '1');
         $this->assertEquals(
-            array('limit' => $used + 10, 'usage' => $used + 1),
+            ['limit' => $used + 10, 'usage' => $used + 1],
             self::$vfs->getQuota()
         );
         self::$vfs->writeData('', 'file2', '12345');
         $this->assertEquals(
-            array('limit' => $used + 10, 'usage' => $used + 5),
+            ['limit' => $used + 10, 'usage' => $used + 5],
             self::$vfs->getQuota()
         );
         self::$vfs->writeData('', 'file2', '123');
         $this->assertEquals(
-            array('limit' => $used + 10, 'usage' => $used + 3),
+            ['limit' => $used + 10, 'usage' => $used + 3],
             self::$vfs->getQuota()
         );
         self::$vfs->setQuota(-1);
@@ -399,39 +402,39 @@ class TestBase extends TestCase
         }
         self::$vfs->writeData('', 'file2', '1');
         $this->assertEquals(
-            array('file2', 'test'),
+            ['file2', 'test'],
             array_keys($this->_sort(self::$vfs->listFolder('/')))
         );
         $this->assertEquals(
-            array('file2' => null, 'test' => array()),
+            ['file2' => null, 'test' => []],
             $this->_sort(self::$vfs->listFolder(''))
         );
         $this->assertEquals(
-            array('test' => array()),
+            ['test' => []],
             $this->_sort(self::$vfs->listFolder('', null, true, true))
         );
         self::$vfs->writeData('test', '.file2', 'content2');
         $this->assertEquals(
-            array('file2' => null,
-                  'test' => array('.file2' => null,
-                                  'dir1' => array('file1' => null,
-                                                   'file1s' => null,
-                                                  'file2' => null),
-                                  'dir2' => array(),
-                                  'file1' => null)),
+            ['file2' => null,
+                'test' => ['.file2' => null,
+                    'dir1' => ['file1' => null,
+                        'file1s' => null,
+                        'file2' => null],
+                    'dir2' => [],
+                    'file1' => null]],
             $this->_sort(self::$vfs->listFolder('', null, true, false, true))
         );
         $this->assertEquals(
-            array('dir1' => array('file1' => null,
-                                  'file1s' => null,
-                                  'file2' => null),
-                  'dir2' => array(),
-                  'file1' => null),
+            ['dir1' => ['file1' => null,
+                'file1s' => null,
+                'file2' => null],
+                'dir2' => [],
+                'file1' => null],
             $this->_sort(self::$vfs->listFolder('test', null, false, false, true))
         );
         $this->assertEquals(
-            array('.file2' => null,
-                  'dir2' => array()),
+            ['.file2' => null,
+                'dir2' => []],
             $this->_sort(self::$vfs->listFolder('test', '^.*1$'))
         );
     }
@@ -460,7 +463,7 @@ class TestBase extends TestCase
                 if (!empty($item['subdirs'])) {
                     $item = $this->_sort($item['subdirs']);
                 } else {
-                    $item = array();
+                    $item = [];
                 }
             } else {
                 $item = null;

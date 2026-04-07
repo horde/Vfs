@@ -15,6 +15,9 @@ namespace Horde\Vfs\Test\Integration\Sql;
 use Horde\Vfs\Test\Integration\ConfigHelper;
 use Horde_Db_Adapter_Mysqli;
 
+/**
+ * @coversNothing
+ */
 class MysqliTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void

@@ -17,12 +17,15 @@ use Horde\Vfs\Test\Integration\ConfigHelper;
 use Horde_Db_Adapter_Pdo_Pgsql;
 use PDO;
 
+/**
+ * @coversNothing
+ */
 class PgsqlTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (!extension_loaded('pdo') ||
-            !in_array('pgsql', PDO::getAvailableDrivers())) {
+        if (!extension_loaded('pdo')
+            || !in_array('pgsql', PDO::getAvailableDrivers())) {
             self::$reason = 'No pgsql extension or no pgsql PDO driver';
             return;
         }

@@ -17,12 +17,15 @@ use Horde\Vfs\Test\Integration\ConfigHelper;
 use Horde_Db_Adapter_Pdo_Mysql;
 use PDO;
 
+/**
+ * @coversNothing
+ */
 class MysqlTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (!extension_loaded('pdo') ||
-            !in_array('mysql', PDO::getAvailableDrivers())) {
+        if (!extension_loaded('pdo')
+            || !in_array('mysql', PDO::getAvailableDrivers())) {
             self::$reason = 'No mysql extension or no mysql PDO driver';
             return;
         }

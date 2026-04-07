@@ -1,8 +1,9 @@
 <?php
+
 /**
  * VFS API for abstracted file storage and access.
  *
- * Copyright 2002-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -13,10 +14,10 @@
 class Horde_Vfs
 {
     /* Quota constants. */
-    const QUOTA_METRIC_BYTE = 1;
-    const QUOTA_METRIC_KB = 2;
-    const QUOTA_METRIC_MB = 3;
-    const QUOTA_METRIC_GB = 4;
+    public const QUOTA_METRIC_BYTE = 1;
+    public const QUOTA_METRIC_KB = 2;
+    public const QUOTA_METRIC_MB = 3;
+    public const QUOTA_METRIC_GB = 4;
 
     /**
      * Attempts to return a concrete instance based on $driver.
@@ -32,7 +33,7 @@ class Horde_Vfs
      * @return VFS  The newly created concrete VFS instance.
      * @throws Horde_Vfs_Exception
      */
-    public static function factory($driver, $params = array())
+    public static function factory($driver, $params = [])
     {
         $class = 'Horde_Vfs_' . basename(Horde_String::ucfirst($driver));
 

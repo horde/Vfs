@@ -22,6 +22,9 @@ use Horde_Vfs;
 use Horde_Vfs_Exception;
 use PHPUnit\Framework\Attributes\Depends;
 
+/**
+ * @coversNothing
+ */
 class FileTest extends TestBase
 {
     public function testListEmpty(): void
@@ -153,7 +156,7 @@ class FileTest extends TestBase
         if (!is_dir('/root')) {
             $this->markTestSkipped('No /root folder to test permissions.');
         }
-        $vfs = Horde_Vfs::factory('File', array('vfsroot' => '/'));
+        $vfs = Horde_Vfs::factory('File', ['vfsroot' => '/']);
         $vfs->listFolder('root');
     }
 
@@ -179,9 +182,9 @@ class FileTest extends TestBase
 
     public static function setUpBeforeClass(): void
     {
-        self::$vfs = Horde_Vfs::factory('File', array(
-            'vfsroot' => sys_get_temp_dir() . '/vfsfiletest'
-        ));
+        self::$vfs = Horde_Vfs::factory('File', [
+            'vfsroot' => sys_get_temp_dir() . '/vfsfiletest',
+        ]);
     }
 
     public static function tearDownAfterClass(): void
