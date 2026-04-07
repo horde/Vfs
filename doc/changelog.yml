@@ -51,6 +51,20 @@
     identifier: LGPL-2.1
     uri: http://www.horde.org/licenses/lgpl21
   notes: ~
+3.0.0-beta1:
+  api: 3.0.0-beta1
+  state:
+    release: beta
+    api: beta
+  date: 2026-04-07
+  license:
+    identifier: LGPL-2.1-only
+    uri: https://spdx.org/licenses/LGPL-2.1-only.html
+  notes: |-
+    style: php-cs-fixer
+    test: Modernized test suite for phpunit 11-13
+    fix: More defensive code when trying to drop tables
+    chore(hordeyml): Remove kolab related dependencies
 3.0.0-alpha6:
   api: 3.0.0-alpha6
   state:

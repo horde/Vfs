@@ -6,6 +6,11 @@
     "license": "LGPL-2.1-only",
     "authors": [
         {
+            "name": "Ralf Lang",
+            "email": "ralf.lang@ralf-lang.de",
+            "role": "maintainer"
+        },
+        {
             "name": "Jan Schneider",
             "email": "jan@horde.org",
             "role": "lead"
@@ -16,21 +21,23 @@
             "role": "lead"
         }
     ],
-    "time": "2026-03-07",
+    "keywords": [
+        "filesystem",
+        "abstraction"
+    ],
+    "time": "2026-04-07",
     "repositories": [],
     "require": {
         "horde/horde-installer-plugin": "dev-FRAMEWORK_6_0 || ^3 || ^2",
-        "php": "^7.4 || ^8",
+        "php": "^8.1",
         "horde/exception": "^3 || dev-FRAMEWORK_6_0",
         "horde/translation": "^3 || dev-FRAMEWORK_6_0",
         "horde/util": "^3 || dev-FRAMEWORK_6_0"
     },
-    "require-dev": {},
-    "suggest": {
+    "require-dev": {
         "horde/auth": "^3 || dev-FRAMEWORK_6_0",
         "horde/core": "^3 || dev-FRAMEWORK_6_0",
         "horde/db": "^3 || dev-FRAMEWORK_6_0",
-        "horde/kolab_session": "^3 || dev-FRAMEWORK_6_0",
         "horde/mime": "^3 || dev-FRAMEWORK_6_0",
         "horde/mongo": "^2 || dev-FRAMEWORK_6_0",
         "horde/perms": "^3 || dev-FRAMEWORK_6_0",
@@ -38,9 +45,18 @@
         "ext-ftp": "*",
         "ext-ssh2": "*"
     },
+    "suggest": {
+        "horde/auth": "^3 || dev-FRAMEWORK_6_0",
+        "horde/core": "^3 || dev-FRAMEWORK_6_0",
+        "horde/db": "^3 || dev-FRAMEWORK_6_0",
+        "horde/mime": "^3 || dev-FRAMEWORK_6_0",
+        "horde/mongo": "^2 || dev-FRAMEWORK_6_0",
+        "horde/perms": "^3 || dev-FRAMEWORK_6_0",
+        "horde/test": "^3 || dev-FRAMEWORK_6_0"
+    },
     "autoload": {
         "psr-0": {
-            "Horde_Vfs": "lib/"
+            "Vfs": "lib/"
         }
     },
     "autoload-dev": {
@@ -50,7 +66,9 @@
         }
     },
     "config": {
-        "allow-plugins": {}
+        "allow-plugins": {
+            "horde/horde-installer-plugin": true
+        }
     },
     "extra": {
         "branch-alias": {

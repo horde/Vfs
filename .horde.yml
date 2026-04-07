@@ -7,14 +7,20 @@ description: >-
   Local filesystems, Hybrid SQL and filesystem, Samba, SSH2/SFTP, MongoDB.
   Reading, writing and listing of files are all supported.
 list: dev
-type: library
+type: horde-library
 homepage: https://www.horde.org/libraries/Horde_Vfs
 authors:
+  -
+    name: Ralf Lang
+    user: rlang
+    email: ralf.lang@ralf-lang.de
+    active: true
+    role: maintainer
   -
     name: Jan Schneider
     user: jan
     email: jan@horde.org
-    active: true
+    active: false
     role: lead
   -
     name: Chuck Hagenbuch
@@ -23,17 +29,17 @@ authors:
     active: false
     role: lead
 version:
-  release: 3.0.0-alpha6
+  release: 3.0.0-beta1
   api: 3.0.0alpha1
 state:
-  release: alpha
+  release: beta
   api: alpha
 license:
   identifier: LGPL-2.1-only
   uri: http://www.horde.org/licenses/lgpl21
 dependencies:
   required:
-    php: ^7.4 || ^8
+    php: ^8.1
     composer:
       horde/exception: ^3
       horde/translation: ^3
@@ -47,7 +53,19 @@ dependencies:
       horde/mongo: ^2
       horde/perms: ^3
       horde/test: ^3
+  dev:
+    composer:
+      horde/auth: ^3
+      horde/core: ^3
+      horde/db: ^3
+      horde/mime: ^3
+      horde/mongo: ^2
+      horde/perms: ^3
+      horde/test: ^3
     ext:
       ftp: '*'
       ssh2: '*'
 vendor: horde
+keywords:
+  - filesystem
+  - abstraction
