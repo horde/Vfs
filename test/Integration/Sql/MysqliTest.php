@@ -1,12 +1,7 @@
 <?php
-/**
- * Prepare the test setup.
- */
-namespace Horde\Vfs\Test\Sql;
-use Horde\Vfs\Test\Sql\BaseTestCase;
 
 /**
- * Copyright 2012-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2012-2026 Horde LLC (http://www.horde.org/)
  *
  * @author     Jan Schneider <jan@horde.org>
  * @category   Horde
@@ -14,6 +9,12 @@ use Horde\Vfs\Test\Sql\BaseTestCase;
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
+
+namespace Horde\Vfs\Test\Integration\Sql;
+
+use Horde\Vfs\Test\Integration\ConfigHelper;
+use Horde_Db_Adapter_Mysqli;
+
 class MysqliTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
@@ -22,8 +23,10 @@ class MysqliTest extends BaseTestCase
             self::$reason = 'No mysqli extension';
             return;
         }
-        $config = self::getConfig('VFS_SQL_MYSQLI_TEST_CONFIG',
-                                  __DIR__ . '/..');
+        $config = ConfigHelper::getConfig(
+            'VFS_SQL_MYSQLI_TEST_CONFIG',
+            __DIR__ . '/../..'
+        );
         if ($config && !empty($config['vfs']['sql']['mysqli'])) {
             self::$db = new Horde_Db_Adapter_Mysqli($config['vfs']['sql']['mysqli']);
             parent::setUpBeforeClass();

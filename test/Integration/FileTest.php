@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Test the file based virtual file system.
  *
- * Copyright 2008-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -14,201 +15,164 @@
  * @author     Jan Schneider <jan@horde.org>
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
-namespace Horde\Vfs\Test;
-use \Horde_Vfs;
+
+namespace Horde\Vfs\Test\Integration;
+
+use Horde_Vfs;
+use Horde_Vfs_Exception;
+use PHPUnit\Framework\Attributes\Depends;
 
 class FileTest extends TestBase
 {
-
-    public function testListEmpty()
+    public function testListEmpty(): void
     {
         $this->_listEmpty();
     }
 
-    public function testCreateFolder()
+    public function testCreateFolder(): void
     {
         $this->_createFolderStructure();
-        $this->markTestIncomplete(); 
+        $this->markTestIncomplete();
     }
 
-    /**
-     * @depends testCreateFolder
-     */
-    public function testWriteData()
+    #[Depends('testCreateFolder')]
+    public function testWriteData(): void
     {
         $this->_writeData();
     }
 
-    /**
-     * @depends testCreateFolder
-     */
-    public function testWrite()
+    #[Depends('testCreateFolder')]
+    public function testWrite(): void
     {
         $this->_write();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testRead()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testRead(): void
     {
         $this->_read();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testReadFile()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testReadFile(): void
     {
         $this->_readFile();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testReadStream()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testReadStream(): void
     {
         $this->_readStream();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testReadByteRange()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testReadByteRange(): void
     {
         $this->_readByteRange();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testSize(): void
     {
         $this->_size();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testFolderSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testFolderSize(): void
     {
         $this->_folderSize();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testVfsSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testVfsSize(): void
     {
         $this->_vfsSize();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testCopy()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testCopy(): void
     {
         $this->_copy();
     }
 
-    /**
-     * @depends testCopy
-     */
-    public function testRename()
+    #[Depends('testCopy')]
+    public function testRename(): void
     {
         $this->_rename();
     }
 
-    /**
-     * @depends testRename
-     */
-    public function testMove()
+    #[Depends('testRename')]
+    public function testMove(): void
     {
         $this->_move();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testDeleteFile()
+    #[Depends('testMove')]
+    public function testDeleteFile(): void
     {
         $this->_deleteFile();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testDeleteFolder()
+    #[Depends('testMove')]
+    public function testDeleteFolder(): void
     {
         $this->_deleteFolder();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testEmptyFolder()
+    #[Depends('testMove')]
+    public function testEmptyFolder(): void
     {
         $this->_emptyFolder();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testQuota()
+    #[Depends('testMove')]
+    public function testQuota(): void
     {
         $this->_quota();
     }
 
-    /**
-     * @depends testQuota
-     */
-    public function testListFolder()
+    #[Depends('testQuota')]
+    public function testListFolder(): void
     {
         $this->_listFolder();
     }
 
-    /**
-     * @expectedExceptionMessage Unable to access VFS directory root.
-     */
-    public function testListFolderWithoutPermissions()
+    public function testListFolderWithoutPermissions(): void
     {
-        $this->expectException('Horde_Vfs_Exception');
-        
+        $this->expectException(Horde_Vfs_Exception::class);
+        $this->expectExceptionMessage('Unable to access VFS directory root.');
+
         if (!is_dir('/root')) {
             $this->markTestSkipped('No /root folder to test permissions.');
         }
         $vfs = Horde_Vfs::factory('File', array('vfsroot' => '/'));
         $vfs->listFolder('root');
-
-        $this->markTestIncomplete(); 
     }
 
-    public function testChmod()
+    public function testChmod(): void
     {
         $this->_chmod();
     }
 
-    public function testNullRoot()
+    public function testNullRoot(): void
     {
         $this->_nullRoot();
     }
 
-    public function testDeleteUnusalFileNames()
+    public function testDeleteUnusalFileNames(): void
     {
         $file = '高&执&行&力&的&打&造.txt';
         $dir = '.horde/foo';
         $path = sys_get_temp_dir() . '/vfsfiletest/' . $dir . '/' . $file;
         self::$vfs->writeData($dir, $file, 'some content', true);
-        //$this->assertFileExists($path);
-        //$this->assertStringEqualsFile($path, 'some content');
         self::$vfs->delete($dir, $file);
         $this->assertFileDoesNotExist($path);
     }

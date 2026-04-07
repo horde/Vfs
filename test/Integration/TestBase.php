@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2012-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2012-2026 Horde LLC (http://www.horde.org/)
  *
  * @author     Jan Schneider <jan@horde.org>
  * @category   Horde
@@ -8,8 +9,11 @@
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
-namespace Horde\Vfs\Test;
-use Horde\Test\TestCase as TestCase;
+
+namespace Horde\Vfs\Test\Integration;
+
+use Horde_Vfs_Exception;
+use PHPUnit\Framework\TestCase;
 
 class TestBase extends TestCase
 {
@@ -73,8 +77,6 @@ class TestBase extends TestCase
             $this->fail('Missing directory should throw an exception unless $autocreate is set');
         } catch (Horde_Vfs_Exception $e) {
         }
-
-
     }
 
     /**
@@ -121,10 +123,12 @@ class TestBase extends TestCase
     {
         $this->assertEquals(
             file_get_contents(__FILE__),
-            stream_get_contents(self::$vfs->readStream('test/dir1', 'file2')));
+            stream_get_contents(self::$vfs->readStream('test/dir1', 'file2'))
+        );
         $this->assertEquals(
             file_get_contents(__FILE__),
-            stream_get_contents(self::$vfs->readStream('test/dir3', 'file2')));
+            stream_get_contents(self::$vfs->readStream('test/dir3', 'file2'))
+        );
     }
 
     protected function _readByteRange()
@@ -306,7 +310,8 @@ class TestBase extends TestCase
         self::$vfs->createFolder('test/dir2', 'dir2_1');
         $this->assertEquals(
             array('dir2_1', 'dir5', 'file1', 'file2'),
-            array_keys($this->_sort(self::$vfs->listFolder('test/dir2'))));
+            array_keys($this->_sort(self::$vfs->listFolder('test/dir2')))
+        );
         self::$vfs->emptyFolder('test/dir2');
         $this->assertFalse(self::$vfs->exists('test/dir2', 'file1'));
         $this->assertFalse(self::$vfs->exists('test/dir2', 'file2'));
@@ -395,13 +400,16 @@ class TestBase extends TestCase
         self::$vfs->writeData('', 'file2', '1');
         $this->assertEquals(
             array('file2', 'test'),
-            array_keys($this->_sort(self::$vfs->listFolder('/'))));
+            array_keys($this->_sort(self::$vfs->listFolder('/')))
+        );
         $this->assertEquals(
             array('file2' => null, 'test' => array()),
-            $this->_sort(self::$vfs->listFolder('')));
+            $this->_sort(self::$vfs->listFolder(''))
+        );
         $this->assertEquals(
             array('test' => array()),
-            $this->_sort(self::$vfs->listFolder('', null, true, true)));
+            $this->_sort(self::$vfs->listFolder('', null, true, true))
+        );
         self::$vfs->writeData('test', '.file2', 'content2');
         $this->assertEquals(
             array('file2' => null,
@@ -411,18 +419,21 @@ class TestBase extends TestCase
                                                   'file2' => null),
                                   'dir2' => array(),
                                   'file1' => null)),
-            $this->_sort(self::$vfs->listFolder('', null, true, false, true)));
+            $this->_sort(self::$vfs->listFolder('', null, true, false, true))
+        );
         $this->assertEquals(
             array('dir1' => array('file1' => null,
                                   'file1s' => null,
                                   'file2' => null),
                   'dir2' => array(),
                   'file1' => null),
-            $this->_sort(self::$vfs->listFolder('test', null, false, false, true)));
+            $this->_sort(self::$vfs->listFolder('test', null, false, false, true))
+        );
         $this->assertEquals(
             array('.file2' => null,
                   'dir2' => array()),
-            $this->_sort(self::$vfs->listFolder('test', '^.*1$')));
+            $this->_sort(self::$vfs->listFolder('test', '^.*1$'))
+        );
     }
 
     protected function _chmod()

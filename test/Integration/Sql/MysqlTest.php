@@ -1,12 +1,7 @@
 <?php
+
 /**
- * Prepare the test setup.
- */
-namespace Horde\Vfs\Test\Sql;
-use Horde\Vfs\Test\Sql\BaseTestCase;
-use Horde_Db_Adapter_Mysql;
-/**
- * Copyright 2012-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2012-2026 Horde LLC (http://www.horde.org/)
  *
  * @author     Jan Schneider <jan@horde.org>
  * @category   Horde
@@ -14,6 +9,12 @@ use Horde_Db_Adapter_Mysql;
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
+
+namespace Horde\Vfs\Test\Integration\Sql;
+
+use Horde\Vfs\Test\Integration\ConfigHelper;
+use Horde_Db_Adapter_Mysql;
+
 class MysqlTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
@@ -22,8 +23,10 @@ class MysqlTest extends BaseTestCase
             self::$reason = 'No mysql extension';
             return;
         }
-        $config = self::getConfig('VFS_SQL_MYSQL_TEST_CONFIG',
-                                  __DIR__ . '/..');
+        $config = ConfigHelper::getConfig(
+            'VFS_SQL_MYSQL_TEST_CONFIG',
+            __DIR__ . '/../..'
+        );
         if ($config && !empty($config['vfs']['sql']['mysql'])) {
             self::$db = new Horde_Db_Adapter_Mysql($config['vfs']['sql']['mysql']);
             parent::setUpBeforeClass();

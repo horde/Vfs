@@ -1,14 +1,7 @@
 <?php
-/**
- * Prepare the test setup.
- */
-namespace Horde\Vfs\Test\Sql\Pdo;
-use Horde\Vfs\Test\Sql\BaseTestCase;
-use \PDO;
-use Horde_Db_Adapter_Pdo_Mysql;
 
 /**
- * Copyright 2012-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2012-2026 Horde LLC (http://www.horde.org/)
  *
  * @author     Jan Schneider <jan@horde.org>
  * @category   Horde
@@ -16,6 +9,14 @@ use Horde_Db_Adapter_Pdo_Mysql;
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
+
+namespace Horde\Vfs\Test\Integration\Sql\Pdo;
+
+use Horde\Vfs\Test\Integration\Sql\BaseTestCase;
+use Horde\Vfs\Test\Integration\ConfigHelper;
+use Horde_Db_Adapter_Pdo_Mysql;
+use PDO;
+
 class MysqlTest extends BaseTestCase
 {
     public static function setUpBeforeClass(): void
@@ -25,8 +26,10 @@ class MysqlTest extends BaseTestCase
             self::$reason = 'No mysql extension or no mysql PDO driver';
             return;
         }
-        $config = self::getConfig('VFS_SQL_PDO_MYSQL_TEST_CONFIG',
-                                  __DIR__ . '/../..');
+        $config = ConfigHelper::getConfig(
+            'VFS_SQL_PDO_MYSQL_TEST_CONFIG',
+            __DIR__ . '/../../..'
+        );
         if ($config && !empty($config['vfs']['sql']['pdo_mysql'])) {
             self::$db = new Horde_Db_Adapter_Pdo_Mysql($config['vfs']['sql']['pdo_mysql']);
             parent::setUpBeforeClass();

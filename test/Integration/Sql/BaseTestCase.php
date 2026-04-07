@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2012-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2012-2026 Horde LLC (http://www.horde.org/)
  *
  * @author     Jan Schneider <jan@horde.org>
  * @category   Horde
@@ -8,13 +9,16 @@
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
-namespace Horde\Vfs\Test\Sql;
-use Horde\Vfs\Test\TestBase;
-use \Horde_Log_Logger;
-use \Horde_Log_Handler_Cli;
-use \Horde_Db_Migration_Migrator;
-use \Horde_Vfs_Sql;
+
+namespace Horde\Vfs\Test\Integration\Sql;
+
+use Horde\Vfs\Test\Integration\TestBase;
+use Horde_Db_Migration_Migrator;
+use Horde_Log_Handler_Cli;
+use Horde_Log_Logger;
+use Horde_Vfs_Sql;
 use PEAR_Config;
+use PHPUnit\Framework\Attributes\Depends;
 
 class BaseTestCase extends TestBase
 {
@@ -22,153 +26,121 @@ class BaseTestCase extends TestBase
 
     protected static $migrator;
 
-    public function testListEmpty()
+    public function testListEmpty(): void
     {
         $this->_listEmpty();
     }
 
-    public function testCreateFolder()
+    public function testCreateFolder(): void
     {
         $this->_createFolderStructure();
         $this->markTestIncomplete();
     }
 
-    /**
-     * @depends testCreateFolder
-     */
-    public function testWriteData()
+    #[Depends('testCreateFolder')]
+    public function testWriteData(): void
     {
         $this->_writeData();
     }
 
-    /**
-     * @depends testCreateFolder
-     */
-    public function testWrite()
+    #[Depends('testCreateFolder')]
+    public function testWrite(): void
     {
         $this->_write();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testRead()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testRead(): void
     {
         $this->_read();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testReadFile()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testReadFile(): void
     {
         $this->_readFile();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testReadByteRange()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testReadByteRange(): void
     {
         $this->_readByteRange();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testSize(): void
     {
         $this->_size();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testFolderSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testFolderSize(): void
     {
         $this->_folderSize();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testVfsSize()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testVfsSize(): void
     {
         $this->_vfsSize();
     }
 
-    /**
-     * @depends testWrite
-     * @depends testWriteData
-     */
-    public function testCopy()
+    #[Depends('testWrite')]
+    #[Depends('testWriteData')]
+    public function testCopy(): void
     {
         $this->_copy();
     }
 
-    /**
-     * @depends testCopy
-     */
-    public function testRename()
+    #[Depends('testCopy')]
+    public function testRename(): void
     {
         $this->_rename();
     }
 
-    /**
-     * @depends testRename
-     */
-    public function testMove()
+    #[Depends('testRename')]
+    public function testMove(): void
     {
         $this->_move();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testDeleteFile()
+    #[Depends('testMove')]
+    public function testDeleteFile(): void
     {
         $this->_deleteFile();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testDeleteFolder()
+    #[Depends('testMove')]
+    public function testDeleteFolder(): void
     {
         $this->_deleteFolder();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testEmptyFolder()
+    #[Depends('testMove')]
+    public function testEmptyFolder(): void
     {
         $this->_emptyFolder();
     }
 
-    /**
-     * @depends testMove
-     */
-    public function testQuota()
+    #[Depends('testMove')]
+    public function testQuota(): void
     {
         $this->_quota();
     }
 
-    /**
-     * @depends testQuota
-     */
-    public function testListFolder()
+    #[Depends('testQuota')]
+    public function testListFolder(): void
     {
         $this->_listFolder();
     }
 
-    public function testNullRoot()
+    public function testNullRoot(): void
     {
         $this->_nullRoot();
     }
@@ -177,7 +149,7 @@ class BaseTestCase extends TestBase
     {
         $logger = new Horde_Log_Logger(new Horde_Log_Handler_Cli());
         //self::$db->setLogger($logger);
-        $dir = __DIR__ . '/../../migration/Horde/Vfs';
+        $dir = __DIR__ . '/../../../migration/Horde/Vfs';
         if (!is_dir($dir)) {
             error_reporting(E_ALL & ~E_DEPRECATED);
             $dir = PEAR_Config::singleton()
@@ -189,7 +161,8 @@ class BaseTestCase extends TestBase
             self::$db,
             null,//$logger,
             array('migrationsPath' => $dir,
-                  'schemaTableName' => 'horde_vfs_schema_info'));
+                  'schemaTableName' => 'horde_vfs_schema_info')
+        );
         self::$migrator->up();
 
         self::$vfs = new Horde_Vfs_Sql(array('db' => self::$db));
@@ -210,5 +183,4 @@ class BaseTestCase extends TestBase
         self::$db = self::$migrator = null;
         parent::tearDownAfterClass();
     }
-
 }
