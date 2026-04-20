@@ -27,7 +27,7 @@
  *         'win', 'netware' By default, we attempt to auto-detect type.
  *
  * Copyright 2002-2026 Horde LLC (http://www.horde.org/)
- * Copyright 2002-2026 Michael Varghese <mike.varghese@ascellatech.com>
+ * Copyright 2002-2007 Michael Varghese <mike.varghese@ascellatech.com>
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -101,7 +101,14 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      *
      * @var string
      */
-    protected $_type;
+    protected $_type = null;
+
+    /**
+     * True if we should try MLSD command
+     *
+     * @var bool
+     */
+    protected $_mlsd = null;
 
     /**
      * Returns the size of a file.
@@ -202,8 +209,14 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $url = 'ftp://';
         }
         $url .= $this->_params['username'] . ':' . $this->_params['password']
-            . '@' . $this->_params['hostspec'] . ':' . $this->_params['port']
-            . '/' . $this->_getPath($path, $name);
+            . '@' . $this->_params['hostspec'] . ':' . $this->_params['port'];
+
+        $path = $this->_getPath($path, $name);
+        if (substr($path, 0, 1) !== '/') {
+            $path = '/' . $path;
+        }
+        $url .= $path;
+
         $stream = @fopen($url, 'r');
         if (!is_resource($stream)) {
             throw new Horde_Vfs_Exception('Unable to open VFS file.');
@@ -408,6 +421,52 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         }
     }
 
+    private static array $patterns = [
+        'unix' => '/^
+            ([-dlpscbD]          # [1] file type: -, d, l, p, s, c, b, D
+             [rwxstST-]{9})      #     permissions (9 chars)
+            \s+
+            (\d+)                # [2] hard link count
+            \s+
+            (\S+)                # [3] owner
+            \s+
+            (.+?)                # [4] group (may contain spaces, e.g. "Domain Users")
+             \s+
+            (\d+)                # [5] file size (bytes)
+            \s+
+            (\w{3})              # [6] month (Jan, Feb, …)
+            \s+
+            (\d{1,2})            # [7] day
+            \s+
+            (\d{2}:\d{2}         # [8] time (HH:MM)
+                |\d{4})          #     OR year
+            \s
+            (.+?)                # [9] filename — ONE space consumed, rest preserved
+                                 #     (handles filenames that start with a space)
+            (?:\s+->\s+(.+))?    # [10] symlink target (optional)
+            $
+            /x',
+        'netware' => '/^
+            ([d-])               # [1] type: d = directory, - = file
+            \s+
+            \[([RWCEAFMS-]*)\]   # [2] permissions in brackets e.g. [RWCEAFMS] or [RW------]
+            \s+
+            (\S+)                # [3] owner
+            \s+
+            (\d+)                # [4] size in bytes
+            \s+
+            (\w{3})              # [5] month
+            \s+
+            (\d{1,2})            # [6] day
+            \s+
+            (\d{2}:\d{2}         # [7] time HH:MM
+                |\d{4})          #     OR year
+            \s
+            (.+)                 # [8] filename (single \s to preserve leading spaces)
+            $
+            /x',
+    ];
+
     /**
      * Returns an unsorted file list of the specified directory.
      *
@@ -420,50 +479,61 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
      * @return array  File list.
      * @throws Horde_Vfs_Exception
      */
-    protected function _listFolder(
-        $path = '',
-        $filter = null,
-        $dotfiles = true,
-        $dironly = false
-    ) {
+    protected function _listFolder($path = '', $filter = null, $dotfiles = true, $dironly = false)
+    {
         $this->_connect();
 
-        if (empty($this->_type)) {
-            if (!empty($this->_params['type'])) {
-                $this->_type = $this->_params['type'];
-            } else {
-                $type = Horde_String::lower(@ftp_systype($this->_stream));
-                if ($type == 'unknown') {
-                    // Go with unix-style listings by default.
+        $type = $this->_type;
+        if ($type === null) {
+            $type = $this->_params['type'] ?? '';
+            if ($type === '') {
+                $type = @ftp_systype($this->_stream);
+                if ($type === false) {
                     $type = 'unix';
-                } elseif (strpos($type, 'win') !== false) {
-                    $type = 'win';
-                } elseif (strpos($type, 'netware') !== false) {
-                    $type = 'netware';
+                } else {
+                    $type = Horde_String::lower($type);
+                    if ($type == 'unknown') {
+                        // Go with unix-style listings by default.
+                        $type = 'unix';
+                    } elseif (strpos($type, 'win') !== false) {
+                        $type = 'win';
+                    } elseif (strpos($type, 'netware') !== false) {
+                        $type = 'netware';
+                    }
                 }
-
-                $this->_type = $type;
             }
+            $this->_type = $type;
         }
 
         $olddir = $this->getCurrentDirectory();
+
         $path = $this->_getPath('', $path);
         if (strlen($path)) {
             $this->_setPath($path);
         }
 
-        if ($this->_type == 'unix') {
-            // If we don't want dotfiles, We can save work here by not
-            // doing an ls -a and then not doing the check later (by
-            // setting $dotfiles to true, the if is short-circuited).
-            if ($dotfiles) {
-                $list = ftp_rawlist($this->_stream, '-al');
-                $dotfiles = true;
-            } else {
-                $list = ftp_rawlist($this->_stream, '-l');
+        $mlsd = $this->_mlsd;
+        if ($msld === null) {
+            //TODO: Change default to true once MLSD is tested and enhanced to work on different server types
+            $this->_mlsd = $mlsd = (bool) ($this->_params['mlsd'] ?? false);
+        }
+
+        if ($mlsd) {
+            $list = ftp_mlsd($this->_stream, $flags);
+            if ($list === false) {
+                // MLSD is not supported, do not try it anymore
+                $this->_mlsd = $mlsd = false;
             }
-        } else {
-            $list = ftp_rawlist($this->_stream, '');
+        }
+
+        if (!$mlsd) {
+            if ($type === 'unix') {
+                // some servers completely ignore these flags
+                $flags = $dotfiles ? '-al' : '-l';
+            } else {
+                $flags = '';
+            }
+            $list = ftp_rawlist($this->_stream, $flags);
         }
 
         if (!is_array($list)) {
@@ -474,161 +544,183 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         }
 
         /* If 'maplocalids' is set, check for the POSIX extension. */
-        $mapids = (!empty($this->_params['maplocalids']) && extension_loaded('posix'));
+        $mapids = !empty($this->_params['maplocalids']) && extension_loaded('posix');
 
         $currtime = time();
+
+        $lsformat = $this->_params['lsformat'] ?? null;
+        $pattern = self::$patterns[$type] ?? null;
+
         $files = [];
 
         foreach ($list as $line) {
-            $file = [];
+            $link = null;
+            $linktype = null;
 
-            $item = preg_split('/\s+/', $line);
-            if (($this->_type == 'unix')
-                || (($this->_type == 'win') && !preg_match('|\d\d-\d\d-\d\d|', $item[0]))) {
-                if (count($item) < 8 || substr($line, 0, 5) == 'total') {
-                    continue;
-                }
-                $file['perms'] = $item[0];
-                if ($mapids) {
-                    if (!isset($this->_uids[$item[2]])) {
-                        $entry = posix_getpwuid($item[2]);
-                        $this->_uids[$item[2]] = (empty($entry)) ? $item[2] : $entry['name'];
-                    }
-                    $file['owner'] = $this->_uids[$item[2]];
-                    if (!isset($this->_uids[$item[3]])) {
-                        $entry = posix_getgrgid($item[3]);
-                        $this->_uids[$item[3]] = (empty($entry)) ? $item[3] : $entry['name'];
-                    }
-                    $file['group'] = $this->_uids[$item[3]];
+            if ($mlsd) {
+                $line = array_change_key_case($line, CASE_LOWER);
+                $filename = $line['name'];
+                $perms = '';
+                $owner = $line['unix.uid'] ?? '';
+                $group = $link['unix.gid'] ?? '';
 
+                $dt = DateTime::createFromFormat('YmdHis', $line['modify']);
+                $date = $dt ? $dt->getTimestamp() : false;
+
+                $filetype = $line['type'] ?? '';
+                if ($filetype === 'file') {
+                    $filetype = self::getFileType($filename);
+                    $size = $line['size'] ?? '';
+                } elseif (substr($filetype, -3) === 'dir') {
+                    $filetype = '**dir';
+                    $size = $line['sizd'] ?? '';
                 } else {
-                    $file['owner'] = $item[2];
-                    $file['group'] = $item[3];
+                    $filetype = '';
+                    $size = '';
                 }
-
-                if (!empty($this->_params['lsformat'])
-                    && ($this->_params['lsformat'] == 'aix')) {
-                    $file['name'] = substr($line, strpos($line, sprintf("%s %2s %-5s", $item[5], $item[6], $item[7])) + 13);
+            } else {
+                if ($pattern !== null) {
+                    if (!preg_match($pattern, $line, $item)) {
+                        continue;
+                    }
+                    array_shift($item);
                 } else {
-                    $file['name'] = substr($line, strpos($line, sprintf("%s %2s %5s", $item[5], $item[6], $item[7])) + 13);
-                }
-
-                // Filter out '.' and '..' entries.
-                if (preg_match('/^\.\.?\/?$/', $file['name'])) {
-                    continue;
-                }
-
-                // Filter out dotfiles if they aren't wanted.
-                if (!$dotfiles && substr($file['name'], 0, 1) == '.') {
-                    continue;
-                }
-
-                $p1 = substr($file['perms'], 0, 1);
-                if ($p1 === 'l') {
-                    $file['link'] = substr($file['name'], strpos($file['name'], '->') + 3);
-                    $file['name'] = substr($file['name'], 0, strpos($file['name'], '->') - 1);
-                    $file['type'] = '**sym';
-
-                    if ($this->isFolder('', $file['link'])) {
-                        $file['linktype'] = '**dir';
-                    } else {
-                        $parts = explode('/', $file['link']);
-                        $name = explode('.', array_pop($parts));
-                        if (count($name) == 1 || ($name[0] === '' && count($name) == 2)) {
-                            $file['linktype'] = '**none';
-                        } else {
-                            $file['linktype'] = Horde_String::lower(array_pop($name));
+                    $item = preg_split('/\s+/', $line);
+                    if ($type == 'win' && !preg_match('|\d\d-\d\d-\d\d|', $item[0])) {
+                        if (count($item) < 8 || substr($line, 0, 5) == 'total') {
+                            continue;
                         }
                     }
-                } elseif ($p1 === 'd') {
-                    $file['type'] = '**dir';
-                } else {
-                    $name = explode('.', $file['name']);
-                    if (count($name) == 1 || (substr($file['name'], 0, 1) === '.' && count($name) == 2)) {
-                        $file['type'] = '**none';
+                }
+
+                if ($type === 'unix' || $type === 'win') {
+                    $perms = $item[0];
+                    $p1 = substr($perms, 0, 1);
+
+                    if ($pattern !== null) {
+                        $filename = $item[8];
+                        if ($p1 === 'l') {
+                            $link = $item[9] ?? '';
+                        }
                     } else {
-                        $file['type'] = Horde_String::lower($name[count($name) - 1]);
+                        if ($lsformat === 'aix') {
+                            $filename = substr($line, strpos($line, sprintf("%s %2s %-5s", $item[5], $item[6], $item[7])) + 13);
+                        } else {
+                            $filename = substr($line, strpos($line, sprintf("%s %2s %5s", $item[5], $item[6], $item[7])) + 13);
+                        }
+                        if ($p1 === 'l') {
+                            $pos = strpos($filename, '->');
+                            if ($pos !== false) {
+                                $link = substr($filename, $pos + 3);
+                                $filename = substr($filename, 0, $pos - 1);
+                            }
+                        }
                     }
-                }
-                if ($file['type'] == '**dir') {
-                    $file['size'] = -1;
-                } else {
-                    $file['size'] = $item[4];
-                }
-                if (strpos($item[7], ':') !== false) {
-                    $file['date'] = strtotime($item[7] . ':00' . $item[5] . ' ' . $item[6] . ' ' . date('Y', $currtime));
-                    // If the ftp server reports a file modification date more
-                    // less than one day in the future, don't try to subtract
-                    // a year from the date.  There is no way to know, for
-                    // example, if the VFS server and the ftp server reside
-                    // in different timezones.  We should simply report to the
-                    //  user what the FTP server is returning.
-                    if ($file['date'] > ($currtime + 86400)) {
-                        $file['date'] = strtotime($item[7] . ':00' . $item[5] . ' ' . $item[6] . ' ' . (date('Y', $currtime) - 1));
-                    }
-                } else {
-                    $file['date'] = strtotime('00:00:00' . $item[5] . ' ' . $item[6] . ' ' . $item[7]);
-                }
-            } elseif ($this->_type == 'netware') {
-                if (count($item) < 8 || substr($line, 0, 5) == 'total') {
-                    continue;
-                }
 
-                $file = [];
-                $file['perms'] = $item[1];
-                $file['owner'] = $item[2];
-                if ($item[0] == 'd') {
-                    $file['type'] = '**dir';
-                } else {
-                    $file['type'] = '**none';
-                }
-                $file['size'] = $item[3];
+                    $owner = $item[2];
+                    $group = $item[3];
 
-                // We don't know the timezone here. Just report what the FTP server says.
-                if (strpos($item[6], ':') !== false) {
-                    $file['date'] = strtotime($item[6] . ':00 ' . $item[5] . ' ' . $item[4] . ' ' . date('Y'));
-                } else {
-                    $file['date'] = strtotime('00:00:00 ' . $item[5] . ' ' . $item[4] . ' ' . $item[6]);
-                }
-
-                $file['name'] = substr($line, 64);
-            } else {
-                /* Handle Windows FTP servers returning DOS-style file
-                 * listings. */
-                $file['perms'] = '';
-                $file['owner'] = '';
-                $file['group'] = '';
-                $file['name'] = $item[3];
-                for ($index = 4, $c = count($item); $index < $c; $index++) {
-                    $file['name'] .= ' ' . $item[$index];
-                }
-                $file['date'] = strtotime($item[0] . ' ' . $item[1]);
-                if ($item[2] == '<DIR>') {
-                    $file['type'] = '**dir';
-                    $file['size'] = -1;
-                } else {
-                    $file['size'] = $item[2];
-                    $name = explode('.', $file['name']);
-                    if (count($name) == 1 || (substr($file['name'], 0, 1) === '.' && count($name) == 2)) {
-                        $file['type'] = '**none';
+                    if ($p1 === 'l') {
+                        $filetype = '**sym';
+                        if ($this->isFolder('', $link)) {
+                            $linktype = '**dir';
+                        } else {
+                            $parts = explode('/', $link);
+                            $linktype = self::getFileType(array_pop($parts));
+                        }
+                    } elseif ($p1 === 'd') {
+                        $filetype = '**dir';
                     } else {
-                        $file['type'] = Horde_String::lower($name[count($name) - 1]);
+                        $filetype = self::getFileType($filename);
+                    }
+
+                    $size = $item[4];
+
+                    $date = self::ftpDate($item[5], $item[6], $item[7], $currtime);
+                } elseif ($type === 'netware') {
+                    $perms = $item[1];
+                    $owner = $item[2];
+                    $group = '';
+
+                    if ($item[0] == 'd') {
+                        $filetype = '**dir';
+                    } else {
+                        $filetype = '**none';
+                    }
+                    $size = $item[3];
+
+                    // We don't know the timezone here. Just report what the FTP server says.
+                    $date = self::ftpDate($item[4], $item[5], $item[6], $currtime);
+                    $filename = $item[7];
+                } else {
+                    /* Handle Windows FTP servers returning DOS-style file
+                     * listings. */
+                    $perms = '';
+                    $owner = '';
+                    $group = '';
+                    $filename = $item[3];
+                    for ($index = 4, $c = count($item); $index < $c; $index++) {
+                        $filename .= ' ' . $item[$index];
+                    }
+                    $date = strtotime($item[0] . ' ' . $item[1]);
+                    if ($item[2] == '<DIR>') {
+                        $filetype = '**dir';
+                        $size = '';
+                    } else {
+                        $size = $item[2];
+                        $name = explode('.', $filename);
+                        if (count($name) == 1 || (substr($filename, 0, 1) === '.' && count($name) == 2)) {
+                            $filetype = '**none';
+                        } else {
+                            $filetype = Horde_String::lower($name[count($name) - 1]);
+                        }
                     }
                 }
+            }
+
+            // Filter out '.' and '..' entries.
+            if ($filename === '.' || $filename === '..') {
+                continue;
+            }
+
+            // Filter out dotfiles if they aren't wanted.
+            if (!$dotfiles && substr($filename, 0, 1) == '.') {
+                continue;
             }
 
             // Filtering.
-            if ($this->_filterMatch($filter, $file['name'])) {
-                unset($file);
-                continue;
-            }
-            if ($dironly && $file['type'] !== '**dir') {
-                unset($file);
+            if ($this->_filterMatch($filter, $filename)) {
                 continue;
             }
 
-            $files[$file['name']] = $file;
-            unset($file);
+            if ($dironly && $filetype !== '**dir') {
+                continue;
+            }
+
+            if ($mapids) {
+                $owner = $this->lookupUid($owner);
+                $group = $this->lookupGid($group);
+            }
+
+            $file = [
+                'name'  => $filename,
+                'perms' => $perms,
+                'owner' => $owner,
+                'group' => $group,
+                'date'  => $date,
+                'type'  => $filetype,
+                'size'  => (int) $size,
+            ];
+
+            if (!is_null($link)) {
+                $file['link'] = $link;
+            }
+
+            if (!is_null($linktype)) {
+                $file['linktype'] = $linktype;
+            }
+
+            $files[$filename] = $file;
         }
 
         if (isset($olddir)) {
@@ -636,6 +728,66 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         }
 
         return $files;
+    }
+
+    private static function getFileType($name)
+    {
+        $parts = explode('.', $name);
+        if (count($parts) == 1 || ($parts[0] === '' && count($parts) == 2)) {
+            return '**none';
+        }
+        return Horde_String::lower(array_pop($parts));
+    }
+
+    private function lookupUid($name)
+    {
+        if (ctype_digit($name)) {
+            if (!isset($this->_uids[$name])) {
+                $result = posix_getpwuid((int) $name);
+                $result = $result === false ? $name : $result['name'];
+                $this->_uids[$name] = $result;
+            }
+            return $result;
+        }
+        return $name;
+    }
+
+    private function lookupGid($name)
+    {
+        if (ctype_digit($name)) {
+            if (!isset($this->_gids[$name])) {
+                $result = posix_getgrgid((int) $name);
+                $result = $result === false ? $name : $result['name'];
+                $this->_gids[$name] = $result;
+            }
+            return $result;
+        }
+        return $name;
+    }
+
+    private static function ftpDate($month, $day, $ty, $currtime)
+    {
+        $hasTime = strpos($ty, ':') !== false;
+        if ($hasTime) {
+            $str = $ty . ':00';
+            $year = date('Y', $currtime);
+        } else {
+            $str = '00:00:00';
+            $year = $ty;
+        }
+        $str .= ' ' . $month . ' ' . $day . ' ';
+        $date = strtotime($str . $year);
+        // If the ftp server reports a file modification date more
+        // less than one day in the future, don't try to subtract
+        // a year from the date.  There is no way to know, for
+        // example, if the VFS server and the ftp server reside
+        // in different timezones.  We should simply report to the
+        //  user what the FTP server is returning.
+        if ($hasTime && $date > $currtime + 86400) {
+            --$year;
+            $date = strtotime($str . $year);
+        }
+        return $date;
     }
 
     /**
