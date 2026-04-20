@@ -562,7 +562,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
                 $filename = $line['name'];
                 $perms = '';
                 $owner = $line['unix.uid'] ?? '';
-                $group = $link['unix.gid'] ?? '';
+                $group = $line['unix.gid'] ?? '';
 
                 $dt = DateTime::createFromFormat('YmdHis', $line['modify']);
                 $date = $dt ? $dt->getTimestamp() : false;
