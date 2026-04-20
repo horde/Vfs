@@ -133,8 +133,7 @@ abstract class Horde_Vfs_Base
      */
     public function getParam($name)
     {
-        return $this->_params[$name]
-            ?? null;
+        return $this->_params[$name] ?? null;
     }
 
     /**
@@ -458,16 +457,21 @@ abstract class Horde_Vfs_Base
      */
     public function autocreatePath($path)
     {
+        // auto-detect UNC paths (for example, to support Netware Volumes)
+        $volume = substr($path, 0, 2) == '//';
+        if ($volume) {
+            $path = substr($path, 2);
+        }
         $dirs = explode('/', $path);
-        $cur = '/';
+        $cur = $volume ? '//' . array_shift($dirs) : '/';
         foreach ($dirs as $dir) {
-            if (!strlen($dir)) {
+            if ($dir === '') {
                 continue;
             }
             if (!$this->isFolder($cur, $dir)) {
                 $this->createFolder($cur, $dir);
             }
-            if ($cur != '/') {
+            if ($cur !== '/') {
                 $cur .= '/';
             }
             $cur .= $dir;
