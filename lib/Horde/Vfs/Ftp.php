@@ -216,12 +216,11 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $path = '/' . $path;
         }
         $url .= $path;
-
         $stream = @fopen($url, 'r');
         if (!is_resource($stream)) {
             throw new Horde_Vfs_Exception('Unable to open VFS file.');
         }
-        return $stream;
+        return $this->_ensureSeekable($stream);
     }
 
     /**
