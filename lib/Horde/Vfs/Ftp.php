@@ -505,12 +505,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $this->_type = $type;
         }
 
-        $olddir = $this->getCurrentDirectory();
-
         $path = $this->_getPath('', $path);
-        if (strlen($path)) {
-            $this->_setPath($path);
-        }
 
         $mlsd = $this->_mlsd;
         if ($mlsd === null) {
@@ -519,14 +514,22 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         }
 
         if ($mlsd) {
-            $list = ftp_mlsd($this->_stream, $flags);
+            $list = ftp_mlsd($this->_stream, $path);
             if ($list === false) {
                 // MLSD is not supported, do not try it anymore
                 $this->_mlsd = $mlsd = false;
             }
         }
 
-        if (!$mlsd) {
+        if ($mlsd) {
+            $olddir = false;
+        } else {
+            $olddir = $this->getCurrentDirectory();
+
+            if (strlen($path)) {
+                $this->_setPath($path);
+            }
+
             if ($type === 'unix') {
                 // some servers completely ignore these flags
                 $flags = $dotfiles ? '-al' : '-l';
@@ -536,11 +539,8 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $list = ftp_rawlist($this->_stream, $flags);
         }
 
-        if (!is_array($list)) {
-            if (isset($olddir)) {
-                $this->_setPath($olddir);
-            }
-            return [];
+        if ($list === false) {
+            $list = [];
         }
 
         /* If 'maplocalids' is set, check for the POSIX extension. */
@@ -723,7 +723,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
             $files[$filename] = $file;
         }
 
-        if (isset($olddir)) {
+        if ($olddir !== false) {
             $this->_setPath($olddir);
         }
 
