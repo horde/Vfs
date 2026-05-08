@@ -513,7 +513,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         }
 
         $mlsd = $this->_mlsd;
-        if ($msld === null) {
+        if ($mlsd === null) {
             //TODO: Change default to true once MLSD is tested and enhanced to work on different server types
             $this->_mlsd = $mlsd = (bool) ($this->_params['mlsd'] ?? false);
         }
