@@ -89,6 +89,21 @@
     Merge pull request #6 from amulet1/patch-1
     fix: Support file names with consecutive spaces on Netware FTP servers
     Development mode for Vfs-3.0.0alpha5
+3.0.0-RC1:
+  api: 3.0.0-RC1
+  state:
+    release: RC
+    api: RC
+  date: 2026-05-19
+  license:
+    identifier: LGPL-2.1-only
+    uri: https://spdx.org/licenses/LGPL-2.1-only.html
+  notes: |-
+    fix(ftp): Ensure readStream() returns a seekable stream
+    refactor(ftp): Do not change/restore current directory in MLSD mode
+    fix: Typo in variable name (MLSD mode)
+    FTP support fixes and improvements  - Do not add extra slash to path when retrieving file if path already starts with slash  - Improve server type detection logic  - Add support for MLSD (controlled by 'mlsd' parameter, disabled by default for now) in _listFolder  - Rework output parsing in _listFolder (rely on pattern matching where possible to better support names with spaces, improve date/time parsing, file type detection, improve overall logic)  - Improve uid lookups and caching, fix gid lookup caching
+    feat: Support UNC paths in autocreatePath()
 2.4.2:
   api: 2.4.0
   state:
