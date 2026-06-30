@@ -1,5 +1,7 @@
 <?php
 
+use Horde\Util\Util;
+
 /**
  * Codebase copyright 2002 Paul Gareau <paul@xhawk.net>.  Adapted with
  * permission by Patrice Levesque <wayne@ptaff.ca> from phpsmb-0.8 code, and
@@ -134,7 +136,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     {
         // Create a temporary file and register it for deletion at the
         // end of this request.
-        if (!($localFile = Horde_Util::getTempFile('vfs'))) {
+        if (!($localFile = Util::getTempFile('vfs'))) {
             throw new Horde_Vfs_Exception('Unable to create temporary file.');
         }
 
@@ -209,7 +211,7 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      */
     public function writeData($path, $name, $data, $autocreate = false)
     {
-        $tmpFile = Horde_Util::getTempFile('vfs');
+        $tmpFile = Util::getTempFile('vfs');
         if (is_resource($data)) {
             rewind($data);
         }

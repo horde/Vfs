@@ -1,5 +1,7 @@
 <?php
 
+use Horde\Util\Util;
+
 /**
  * VFS API for abstracted file storage and access.
  *
@@ -208,7 +210,7 @@ abstract class Horde_Vfs_Base
     {
         // Create a temporary file and register it for deletion at the
         // end of this request.
-        if (!($localFile = Horde_Util::getTempFile('vfs'))) {
+        if (!($localFile = Util::getTempFile('vfs'))) {
             throw new Horde_Vfs_Exception('Unable to create temporary file.');
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+use Horde\Util\Util;
+
 /**
  * VFS implementation for an SSH2 server.
  * This module requires the SSH2 (version 0.10+) PECL package.
@@ -147,7 +149,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
 
         // Create a temporary file and register it for deletion at the
         // end of this request.
-        if (!($localFile = Horde_Util::getTempFile('vfs'))) {
+        if (!($localFile = Util::getTempFile('vfs'))) {
             throw new Horde_Vfs_Exception('Unable to create temporary file.');
         }
 
@@ -217,7 +219,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
      */
     public function writeData($path, $name, $data, $autocreate = false)
     {
-        $tmpFile = Horde_Util::getTempFile('vfs');
+        $tmpFile = Util::getTempFile('vfs');
         $data = $this->_ensureSeekable($data);
         file_put_contents($tmpFile, $data);
         clearstatcache();
@@ -652,7 +654,7 @@ class Horde_Vfs_Ssh2 extends Horde_Vfs_Base
         if ($this->isFolder($path, $name)) {
             $this->_copyRecursive($path, $name, $dest);
         } else {
-            $tmpFile = Horde_Util::getTempFile('vfs');
+            $tmpFile = Util::getTempFile('vfs');
             if (!$this->_recv($this->_getPath($path, $name), $tmpFile)) {
                 throw new Horde_Vfs_Exception(sprintf('Failed to copy from "%s".', $this->_getPath($path, $name)));
             }
