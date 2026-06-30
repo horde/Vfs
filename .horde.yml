@@ -10,20 +10,17 @@ list: dev
 type: horde-library
 homepage: https://www.horde.org/libraries/Horde_Vfs
 authors:
-  -
-    name: Ralf Lang
+  - name: Ralf Lang
     user: rlang
     email: ralf.lang@ralf-lang.de
     active: true
     role: maintainer
-  -
-    name: Jan Schneider
+  - name: Jan Schneider
     user: jan
     email: jan@horde.org
     active: false
     role: lead
-  -
-    name: Chuck Hagenbuch
+  - name: Chuck Hagenbuch
     user: chuck
     email: chuck@horde.org
     active: false
@@ -69,3 +66,102 @@ vendor: horde
 keywords:
   - filesystem
   - abstraction
+ci-platform:
+  '8.1':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+  '8.2':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+  '8.3':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+  '8.4':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+  '8.5':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+  '8.6':
+    - php: ^7.4 || ^8
+    - composer-plugin-api: ^2.2.0
+    - ext-ctype
+    - ext-dom
+    - ext-gettext
+    - ext-hash
+    - ext-iconv
+    - ext-intl
+    - ext-json
+    - ext-openssl
+    - ext-pcre
+    - ext-session
+    - ext-simplexml
+    - ext-spl
+    - ext-xml
+ci-platform-flags:
+  needs_installer_plugin: true
