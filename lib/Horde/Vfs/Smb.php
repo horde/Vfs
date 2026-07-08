@@ -142,9 +142,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
 
         $this->_createRoot();
 
-        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = ['get \"' . $name . '\" ' . $localFile];
-        $this->_command($npath, $cmd);
+        $cmd = ['get ' . $this->_quoteSmbArg($name) . ' ' . $this->_quoteSmbArg($localFile)];
+        $this->_command($this->_getNativePath($path), $cmd);
         if (!file_exists($localFile)) {
             throw new Horde_Vfs_Exception(sprintf('Unable to open VFS file "%s".', $this->_getPath($path, $name)));
         }
@@ -188,14 +187,13 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         // Double quotes not allowed in SMB filename.
         $name = str_replace('"', "'", $name);
 
-        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = ['put \"' . $tmpFile . '\" \"' . $name . '\"'];
+        $cmd = ['put ' . $this->_quoteSmbArg($tmpFile) . ' ' . $this->_quoteSmbArg($name)];
         // do we need to first autocreate the directory?
         if ($autocreate) {
             $this->autocreatePath($path);
         }
 
-        $this->_command($npath, $cmd);
+        $this->_command($this->_getNativePath($path), $cmd);
     }
 
     /**
@@ -237,9 +235,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     {
         $this->_createRoot();
 
-        [$path, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = ['del \"' . $name . '\"'];
-        $this->_command($path, $cmd);
+        $cmd = ['del ' . $this->_quoteSmbArg($name)];
+        $this->_command($this->_getNativePath($path), $cmd);
     }
 
     /**
@@ -254,9 +251,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     {
         $this->_createRoot();
 
-        [$path, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
         try {
-            $this->_command($this->_getPath($path, $name), ['quit']);
+            $this->_command($this->_getNativePath($this->_getPath($path, $name)), ['quit']);
             return true;
         } catch (Horde_Vfs_Exception $e) {
             return false;
@@ -295,11 +291,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         }
 
         // Really delete the folder.
-        [$npath, $name] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = ['rmdir \"' . $name . '\"'];
+        $cmd = ['rmdir ' . $this->_quoteSmbArg($name)];
 
         try {
-            $this->_command($npath, $cmd);
+            $this->_command($this->_getNativePath($path), $cmd);
         } catch (Horde_Vfs_Exception $e) {
             throw new Horde_Vfs_Exception(sprintf('Unable to delete VFS folder "%s".', $this->_getPath($path, $name)));
         }
@@ -338,13 +333,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
             $newpath .= '/';
         }
 
-        [$file, $name] = $this->_escapeShellCommand($oldname, $newname);
+        $oldFull = str_replace('/', '\\', $this->_getNativePath($oldpath)) . $oldname;
+        $newFull = str_replace('/', '\\', $this->_getNativePath($newpath)) . $newname;
         $cmd = [
-            'rename \"'
-            . str_replace('/', '\\\\', $this->_getNativePath($oldpath))
-            . $file . '\" \"'
-            . str_replace('/', '\\\\', $this->_getNativePath($newpath))
-            . $name . '\"',
+            'rename ' . $this->_quoteSmbArg($oldFull) . ' ' . $this->_quoteSmbArg($newFull),
         ];
 
         try {
@@ -369,11 +361,10 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         // Double quotes not allowed in SMB filename.
         $name = str_replace('"', "'", $name);
 
-        [$dir, $mkdir] = $this->_escapeShellCommand($this->_getNativePath($path), $name);
-        $cmd = ['mkdir \"' . $mkdir . '\"'];
+        $cmd = ['mkdir ' . $this->_quoteSmbArg($name)];
 
         try {
-            $this->_command($dir, $cmd);
+            $this->_command($this->_getNativePath($path), $cmd);
         } catch (Horde_Vfs_Exception $e) {
             throw new Horde_Vfs_Exception(sprintf('Unable to create VFS folder "%s".', $this->_getPath($path, $name)));
         }
@@ -400,9 +391,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
         $recursive = false
     ) {
         $this->_createRoot();
-        [$path] = $this->_escapeShellCommand($this->_getNativePath($path));
         return $this->parseListing(
-            $this->_command($path, ['ls']),
+            $this->_command($this->_getNativePath($path), ['ls']),
             $filter,
             $dotfiles,
             $dironly
@@ -570,36 +560,60 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
     }
 
     /**
-     * Replacement for escapeshellcmd(), variable length args, as we only want
-     * certain characters escaped.
+     * Quotes a value for use inside smbclient's -c mini-language.
      *
-     * @param array $array  Strings to escape.
+     * smbclient parses its -c argument itself. Inside that mini-language,
+     * "..." delimits string tokens and ';' separates statements. Everything
+     * that reaches this method is placed inside an argv element handed to
+     * proc_open(), so no shell is involved and shell metacharacters like
+     * $, backtick, |, & carry no meaning. We only have to defuse the
+     * characters that smbclient's own parser cares about, plus reject
+     * control bytes that smbclient can't represent in a filename anyway.
      *
-     * @return array  TODO
+     * @param string $value  Untrusted string to quote.
+     *
+     * @return string  Quoted token safe to concatenate into a smbclient
+     *                 command line.
+     * @throws Horde_Vfs_Exception  If the value contains NUL, CR or LF.
      */
-    protected function _escapeShellCommand()
+    protected function _quoteSmbArg($value)
     {
-        $ret = [];
-        $args = func_get_args();
-        foreach ($args as $arg) {
-            $ret[] = str_replace([';', '\\'], ['\;', '\\\\'], $arg);
+        $value = (string) $value;
+        if (strpbrk($value, "\0\r\n") !== false) {
+            throw new Horde_Vfs_Exception(
+                'Filename contains illegal control character (NUL, CR or LF).'
+            );
         }
-        return $ret;
+        return '"' . str_replace(['\\', '"'], ['\\\\', '\\"'], $value) . '"';
     }
 
     /**
-     * Executes a command and returns output lines in array.
+     * Executes an already-tokenised smbclient command line and returns the
+     * output lines.
      *
-     * @param string $cmd  Command to be executed.
+     * @param array $argv  argv-style array; index 0 is the smbclient binary
+     *                     path, remaining elements are its arguments. Handed
+     *                     directly to proc_open() so no shell is invoked and
+     *                     no argument needs shell-level quoting.
      *
      * @return array  Array on success.
      * @throws Horde_Vfs_Exception
      */
-    protected function _execute($cmd)
+    protected function _execute($argv)
     {
-        $cmd = str_replace('"-U%"', '-N', $cmd);
+        // Anonymous auth: smbclient wants -N instead of -Uempty. Rewrite the
+        // argv element rather than string-patching a shell command line.
+        foreach ($argv as $k => $arg) {
+            if ($arg === '-U') {
+                if (isset($argv[$k + 1]) && $argv[$k + 1] === '') {
+                    array_splice($argv, $k, 2, ['-N']);
+                }
+                break;
+            }
+        }
+
         $proc = proc_open(
-            $cmd,
+            $argv,
             [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
             $pipes
         );
@@ -661,40 +675,51 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
      * Executes SMB commands - without authentication - and returns output
      * lines in array.
      *
-     * @param array $path  Base path for command.
-     * @param array $cmd   Commands to be executed.
+     * @param string $path  Base path for command. Passed to smbclient's -D
+     *                      as its own argv element, so no quoting is needed.
+     * @param array $cmd    Smbclient-language commands to be executed. Each
+     *                      element is a full smbclient statement (e.g.
+     *                      'put "src" "dst"'). Filenames MUST be pre-quoted
+     *                      by callers with _quoteSmbArg(); this method does
+     *                      not add any escaping of its own to $cmd elements.
+     *                      All statements are joined with ';' and handed to
+     *                      smbclient's -c as a single argv element.
      *
      * @return array  Array on success.
      * @throws Horde_Vfs_Exception
      */
     protected function _command($path, $cmd)
     {
-        [$share] = $this->_escapeShellCommand($this->_params['share']);
-
+        // smbclient reads the password from the PASSWD environment variable.
+        // We set it here (still an intended smbclient auth channel) rather
+        // than embedding the password in argv, where it would be visible
+        // via ps to co-located users.
         putenv('PASSWD=' . $this->_params['password']);
-        $port = isset($this->_params['port'])
-            ? (' "-p' . $this->_params['port'] . '"')
-            : '';
-        $ipoption = isset($this->_params['ipaddress'])
-            ? (' -I ' . $this->_params['ipaddress'])
-            : '';
-        $domain = isset($this->_params['domain'])
-            ? (' -W ' . $this->_params['domain'])
-            : '';
-        $fullcmd = $this->_params['smbclient']
-            . ' "//' . $this->_params['hostspec'] . '/' . $share . '"'
-            . $port
-            . ' "-U' . $this->_params['username'] . '"'
-            . ' -D "' . $path . '"'
-            . $ipoption
-            . $domain
-            . ' -c "';
-        foreach ($cmd as $c) {
-            $fullcmd .= $c . ";";
-        }
-        $fullcmd .= '"';
 
-        return $this->_execute($fullcmd);
+        $argv = [
+            $this->_params['smbclient'],
+            '//' . $this->_params['hostspec'] . '/' . $this->_params['share'],
+        ];
+        if (isset($this->_params['port'])) {
+            $argv[] = '-p';
+            $argv[] = (string) $this->_params['port'];
+        }
+        $argv[] = '-U';
+        $argv[] = (string) $this->_params['username'];
+        $argv[] = '-D';
+        $argv[] = (string) $path;
+        if (isset($this->_params['ipaddress'])) {
+            $argv[] = '-I';
+            $argv[] = (string) $this->_params['ipaddress'];
+        }
+        if (isset($this->_params['domain'])) {
+            $argv[] = '-W';
+            $argv[] = (string) $this->_params['domain'];
+        }
+        $argv[] = '-c';
+        $argv[] = implode(';', $cmd) . ';';
+
+        return $this->_execute($argv);
     }
 
     /**
@@ -727,9 +752,8 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
                 $this->_command($path . '/' . $dir . '/', []);
             } catch (Horde_Vfs_Exception $e) {
                 try {
-                    $this->_command('/' . $path . '/', ['mkdir \"' . $dir . '\"']);
+                    $this->_command('/' . $path . '/', ['mkdir ' . $this->_quoteSmbArg($dir)]);
                 } catch (Horde_Vfs_Exception $e) {
-                    echo $e;
                     throw new Horde_Vfs_Exception(sprintf('Unable to create VFS root directory "%s".', $this->_params['vfsroot']));
                 }
             }
