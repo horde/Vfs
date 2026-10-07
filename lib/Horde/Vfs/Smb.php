@@ -745,7 +745,9 @@ class Horde_Vfs_Smb extends Horde_Vfs_Base
             return;
         }
 
-        $root = trim($this->_params['vfsroot'] . '/' . $this->_prefix, '/');
+        $vfsroot = $this->_params['vfsroot'] ?? '';
+        $prefix  = $this->_prefix ?? '';
+        $root = trim($vfsroot . '/' . $prefix, '/');
         $path = '';
         foreach (explode('/', $root) as $dir) {
             try {
