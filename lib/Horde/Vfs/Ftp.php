@@ -210,7 +210,7 @@ class Horde_Vfs_Ftp extends Horde_Vfs_Base
         } else {
             $url = 'ftp://';
         }
-        $url .= $this->_params['username'] . ':' . $this->_params['password']
+        $url .= rawurlencode($this->_params['username']) . ':' . rawurlencode($this->_params['password'])
             . '@' . $this->_params['hostspec'] . ':' . $this->_params['port'];
 
         $path = $this->_getPath($path, $name);
